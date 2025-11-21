@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://cobog1riogmso"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5nxuo"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_r2264"]
+
+[node name="Node3D" type="Node3D" unique_id=1775523403]
+
+[node name="Player" type="Player" parent="." unique_id=1425278556]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1910926051]
+shape = SubResource("CapsuleShape3D_5nxuo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player" unique_id=604386293]
+mesh = SubResource("CapsuleMesh_r2264")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=721147535]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.2503567)
