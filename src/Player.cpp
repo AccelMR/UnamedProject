@@ -1,45 +1,83 @@
 #include "Player.h"
 #include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/input_event_mouse_button.hpp>
+#include <godot_cpp/classes/physics_direct_space_state3d.hpp>
+#include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
+#include <godot_cpp/classes/world3d.hpp>
 
 using namespace godot;
 
-void Player::_bind_methods() {
-    // Si quieres luego, aquí puedes bindear getters/setters de speed, etc.
+void Player::_bind_methods() {}
+
+void Player::_ready()
+{
+  m_collider = get_node<CollisionShape3D>("CollisionShape3D");
+  m_camera = get_node<Camera3D>("../CameraController");
+  m_targetMarker = get_node<Node3D>("../Marker");
 }
 
-void Player::_ready() {
-    // Buscar el CollisionShape3D que ya pusiste en la escena:
-    collision = get_node<CollisionShape3D>("CollisionShape3D");
-    // Si quieres, aquí podrías ajustar el tamaño de la cápsula por código.
+void Player::_unhandled_input(const Ref<InputEvent> &event)
+{
+  if (!m_camera)
+  {
+    return;
+  }
+
+  Ref<InputEventMouseButton> mouseEvent = event;
+  if (mouseEvent.is_valid() && mouseEvent->is_pressed() &&
+      mouseEvent->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT)
+  {
+    Vector2 mouse_pos = mouseEvent->get_position();
+    Vector3 from = m_camera->project_ray_origin(mouse_pos);
+    Vector3 to = from + m_camera->project_ray_normal(mouse_pos) * 10000.0f; // Ugly magic number
+
+    PhysicsDirectSpaceState3D* space = get_world_3d()->get_direct_space_state();
+    Ref<PhysicsRayQueryParameters3D> query = PhysicsRayQueryParameters3D::create(from, to);
+
+    Dictionary hit = space->intersect_ray(query);
+    if (!hit.is_empty())
+    {
+      m_targetPosition = hit["position"];
+      m_bHasTarget = true;
+
+      if (m_targetMarker)
+      {
+        m_targetMarker->set_global_position(m_targetPosition);
+      }
+    }
+  }
 }
 
-void Player::_physics_process(double delta) {
-    Vector3 vel = get_velocity();
+void Player::_physics_process(double delta)
+{
+  Vector3 vel = get_velocity();
 
-    // WASD
-    Vector2 input_dir(
-        Input::get_singleton()->get_action_strength("move_right") -
-        Input::get_singleton()->get_action_strength("move_left"),
-        Input::get_singleton()->get_action_strength("move_backward") -
-        Input::get_singleton()->get_action_strength("move_forward")
-    );
+  if (m_bHasTarget)
+  {
+    Vector3 to_target = m_targetPosition - get_global_position();
+    to_target.y = 0;
 
-    Vector3 dir(input_dir.x, 0, input_dir.y);
-
-    if (dir.length() > 0.01f) {
-        dir = dir.normalized();
-        vel.x = dir.x * speed;
-        vel.z = dir.z * speed;
-    } else {
-        vel.x = 0.0f;
-        vel.z = 0.0f;
+    float dist = to_target.length();
+    if (dist < 0.1f)
+    {
+      m_bHasTarget = false;
+      vel.x = 0;
+      vel.z = 0;
     }
+    else
+    {
+      Vector3 dir = to_target.normalized();
+      vel = dir * m_speed;
 
-    // Salto
-    if (is_on_floor() && Input::get_singleton()->is_action_just_pressed("jump")) {
-        vel.y = jump_velocity;
+      // Rotar opcional
+      look_at(get_global_position() + dir);
     }
+  }
+  else
+  {
+    vel = Vector3(0, 0, 0);
+  }
 
-    set_velocity(vel);
-    move_and_slide();
+  set_velocity(vel);
+  move_and_slide();
 }
