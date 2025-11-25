@@ -78,6 +78,9 @@ void Player::_physics_process(double delta)
     vel = Vector3(0, 0, 0);
   }
 
+  // Gravity
+  vel.y += get_gravity().y;
+
   set_velocity(vel);
   move_and_slide();
 }
