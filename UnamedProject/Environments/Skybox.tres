@@ -1,0 +1,11 @@
+[gd_resource type="Environment" load_steps=3 format=3 uid="uid://x4d4wqn4pk0d"]
+
+[ext_resource type="Material" uid="uid://cu7n7kx8amm80" path="res://Environments/ProceduralSky.tres" id="1_jage4"]
+
+[sub_resource type="Sky" id="Sky_uyl44"]
+sky_material = ExtResource("1_jage4")
+
+[resource]
+background_mode = 2
+background_energy_multiplier = 2.3
+sky = SubResource("Sky_uyl44")

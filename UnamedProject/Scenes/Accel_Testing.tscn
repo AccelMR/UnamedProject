@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=3 uid="uid://dj5gost6kgbod"]
+
+[ext_resource type="Environment" uid="uid://x4d4wqn4pk0d" path="res://Environments/Skybox.tres" id="1_bprmo"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ix3kg"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ix3kg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bprmo"]
+size = Vector3(2.0141296, 0.061523438, 1.9974976)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ix3kg"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ix3kg"]
+albedo_color = Color(0.34117648, 0.38431373, 0.011764706, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_bprmo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iderb"]
+albedo_color = Color(1, 0, 0, 1)
+
+[node name="AccelTesting" type="Node3D" unique_id=1137397554]
+
+[node name="Player" type="Player" parent="." unique_id=1017950454]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.7017956, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=737331114]
+shape = SubResource("CapsuleShape3D_ix3kg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player" unique_id=824501046]
+mesh = SubResource("CapsuleMesh_ix3kg")
+
+[node name="Floor" type="Node3D" parent="." unique_id=1814313253]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=579454449]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -0.0071868896, -0.008300781, 0.00015258789)
+disable_mode = 1
+axis_lock_linear_x = true
+axis_lock_linear_y = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1703013221]
+visible = false
+shape = SubResource("BoxShape3D_bprmo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=702406762]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0051357555, 0.008501816, 2.3040771e-05)
+mesh = SubResource("PlaneMesh_ix3kg")
+surface_material_override/0 = SubResource("StandardMaterial3D_ix3kg")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1337803284]
+environment = ExtResource("1_bprmo")
+
+[node name="Sun" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=1569045703]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 23.992943, 0)
+light_energy = 5.055
+light_indirect_energy = 1.9
+
+[node name="CameraController" type="CameraController" parent="." unique_id=76422519]
+transform = Transform3D(1, 0, 0, 0, 0.7431448, 0.6691306, 0, -0.6691306, 0.7431448, -0.189, 16.44, 8.439)
+current = true
+
+[node name="Marker" type="MeshInstance3D" parent="." unique_id=1428245232]
+mesh = SubResource("SphereMesh_bprmo")
+surface_material_override/0 = SubResource("StandardMaterial3D_iderb")

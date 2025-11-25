@@ -2,29 +2,37 @@
 #define PLAYER_H
 
 #include <godot_cpp/classes/character_body3d.hpp>
+#include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
-#include <godot_cpp/classes/input.hpp>
-#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/input_event.hpp>  
 
 using namespace godot;
 
-class Player : public CharacterBody3D {
-    GDCLASS(Player, CharacterBody3D);
+class Player : public CharacterBody3D
+{
+  GDCLASS(Player, CharacterBody3D);
 
-private:
-    CollisionShape3D *collision = nullptr;
-    float speed = 5.0f;
-    float jump_velocity = 5.0f;
+ public:
+  Player() = default;
+  ~Player() = default;
 
-protected:
-    static void _bind_methods();
+  void _ready() override;
+  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _physics_process(double delta) override;
 
-public:
-    Player() = default;
-    ~Player() = default;
+ protected:
+  static void _bind_methods();
 
-    void _ready() override;
-    void _physics_process(double delta) override;
+ private:
+  CollisionShape3D* m_collider;
+  Camera3D* m_camera;
+
+  float m_speed = 5.0f;
+
+  bool m_bHasTarget = false;
+  Vector3 m_targetPosition;
+
+  Node3D* m_targetMarker = nullptr;
 };
 
 #endif
