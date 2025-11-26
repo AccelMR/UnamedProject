@@ -9,6 +9,8 @@
 
 using namespace godot;
 
+class MouseMarker;
+
 class Player : public CharacterBody3D
 {
   GDCLASS(Player, CharacterBody3D);
@@ -36,7 +38,7 @@ class Player : public CharacterBody3D
   bool m_bHasTarget = false;
   Vector3 m_targetPosition;
 
-  Node3D* m_targetMarker = nullptr;
+  MouseMarker* m_targetMarker = nullptr;
 
   // Editor exposed variables
   String m_markerScenePath = "res://Scenes/Marker.tscn";
