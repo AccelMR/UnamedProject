@@ -30,7 +30,6 @@ void Player::_ready()
     UtilityFunctions::push_warning("No Marker resource");
     return;
   }
-  UtilityFunctions::print("Marker Found");
   m_targetMarker = Object::cast_to<Node3D>(m_resourceMarkerScene->instantiate());
   if (!m_targetMarker)
   {
