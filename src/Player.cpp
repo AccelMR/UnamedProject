@@ -8,6 +8,8 @@
 #include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
+#include "MouseMarker.h"
+
 using namespace godot;
 
 void Player::_bind_methods() 
@@ -30,7 +32,7 @@ void Player::_ready()
     UtilityFunctions::push_warning("No Marker resource");
     return;
   }
-  m_targetMarker = Object::cast_to<Node3D>(m_resourceMarkerScene->instantiate());
+  m_targetMarker = Object::cast_to<MouseMarker>(m_resourceMarkerScene->instantiate());
   if (!m_targetMarker)
   {
     UtilityFunctions::push_warning("Could not instance Marker scene");
@@ -69,7 +71,7 @@ void Player::_unhandled_input(const Ref<InputEvent> &event)
 
       if (m_targetMarker)
       {
-        m_targetMarker->set_global_position(m_targetPosition);
+        m_targetMarker->setPosition(m_targetPosition);
       }
     }
   }
