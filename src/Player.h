@@ -4,9 +4,12 @@
 #include <godot_cpp/classes/character_body3d.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
-#include <godot_cpp/classes/input_event.hpp>  
+#include <godot_cpp/classes/input_event.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
 
 using namespace godot;
+
+class MouseMarker;
 
 class Player : public CharacterBody3D
 {
@@ -20,6 +23,9 @@ class Player : public CharacterBody3D
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _physics_process(double delta) override;
 
+  String getMarkerScenePath() const { return m_markerScenePath; }
+  void setMarkerScenePath(const String& path) { m_markerScenePath = path; }
+
  protected:
   static void _bind_methods();
 
@@ -32,7 +38,14 @@ class Player : public CharacterBody3D
   bool m_bHasTarget = false;
   Vector3 m_targetPosition;
 
-  Node3D* m_targetMarker = nullptr;
+  MouseMarker* m_targetMarker = nullptr;
+
+  // Editor exposed variables
+  String m_markerScenePath = "res://Scenes/Marker.tscn";
+
+  // Resource Dependencies
+  Ref<PackedScene> m_resourceMarkerScene;
 };
 
 #endif
+

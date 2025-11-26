@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dj5gost6kgbod"]
+[gd_scene load_steps=7 format=3 uid="uid://dj5gost6kgbod"]
 
 [ext_resource type="Environment" uid="uid://x4d4wqn4pk0d" path="res://Environments/Skybox.tres" id="1_bprmo"]
 
@@ -14,14 +14,10 @@ size = Vector3(2.0141296, 0.061523438, 1.9974976)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ix3kg"]
 albedo_color = Color(0.34117648, 0.38431373, 0.011764706, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_bprmo"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iderb"]
-albedo_color = Color(1, 0, 0, 1)
-
 [node name="AccelTesting" type="Node3D" unique_id=1137397554]
 
 [node name="Player" type="Player" parent="." unique_id=1017950454]
+markerScenePath = "res://Prefabs/MouseMarker.tscn"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.7017956, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=737331114]
@@ -62,7 +58,3 @@ light_indirect_energy = 1.9
 [node name="CameraController" type="CameraController" parent="." unique_id=76422519]
 transform = Transform3D(1, 0, 0, 0, 0.7431448, 0.6691306, 0, -0.6691306, 0.7431448, -0.189, 16.44, 8.439)
 current = true
-
-[node name="Marker" type="MeshInstance3D" parent="." unique_id=1428245232]
-mesh = SubResource("SphereMesh_bprmo")
-surface_material_override/0 = SubResource("StandardMaterial3D_iderb")

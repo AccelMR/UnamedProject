@@ -3,17 +3,47 @@
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/physics_direct_space_state3d.hpp>
 #include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/world3d.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
+
+#include "MouseMarker.h"
 
 using namespace godot;
 
-void Player::_bind_methods() {}
+void Player::_bind_methods() 
+{
+  ClassDB::bind_method(D_METHOD("getMarkerScenePath"), &Player::getMarkerScenePath);
+  ClassDB::bind_method(D_METHOD("setMarkerScenePath", "path"), &Player::setMarkerScenePath);
+
+  ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), "setMarkerScenePath", "getMarkerScenePath");
+}
 
 void Player::_ready()
 {
   m_collider = get_node<CollisionShape3D>("CollisionShape3D");
   m_camera = get_node<Camera3D>("../CameraController");
-  m_targetMarker = get_node<Node3D>("../Marker");
+
+  // Load resources
+  m_resourceMarkerScene = ResourceLoader::get_singleton()->load(m_markerScenePath);
+  if (!m_resourceMarkerScene.is_valid())
+  {
+    UtilityFunctions::push_warning("No Marker resource");
+    return;
+  }
+  m_targetMarker = Object::cast_to<MouseMarker>(m_resourceMarkerScene->instantiate());
+  if (!m_targetMarker)
+  {
+    UtilityFunctions::push_warning("Could not instance Marker scene");
+    return;
+  }
+
+  SceneTree* tree = get_tree();
+  if (tree)
+  {
+    tree->get_current_scene()->call_deferred("add_child", m_targetMarker);
+  }
 }
 
 void Player::_unhandled_input(const Ref<InputEvent> &event)
@@ -42,7 +72,7 @@ void Player::_unhandled_input(const Ref<InputEvent> &event)
 
       if (m_targetMarker)
       {
-        m_targetMarker->set_global_position(m_targetPosition);
+        m_targetMarker->updateMarkerPosition(m_targetPosition);
       }
     }
   }

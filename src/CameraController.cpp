@@ -1,51 +1,76 @@
 #include "CameraController.h"
+
+#include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/input.hpp>
 
 using namespace godot;
 
-void CameraController::_bind_methods() {}
+void CameraController::_bind_methods() 
+{
+  ClassDB::bind_method(D_METHOD("setSpeed", "speed"), &CameraController::setSpeed);
+  ClassDB::bind_method(D_METHOD("getSpeed"), &CameraController::getSpeed);
 
-void CameraController::_ready() {
-    // Nada especial por ahora
+  ClassDB::bind_method(D_METHOD("setZoomSpeed", "zoomSpeed"), &CameraController::setZoomSpeed);
+  ClassDB::bind_method(D_METHOD("getZoomSpeed"), &CameraController::getZoomSpeed);
+
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "speed"), "setSpeed", "getSpeed");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "zoomSpeed"), "setZoomSpeed", "getZoomSpeed");
 }
-void CameraController::_physics_process(double delta) {
-    Input* input = Input::get_singleton();
 
-    Vector3 movement;
-    Transform3D t = get_global_transform();
+void CameraController::_ready()
+{
+  // Nada especial por ahora
+}
+void CameraController::_physics_process(double delta)
+{
+  Input* input = Input::get_singleton();
 
-    const Vector3 world_right = Vector3(1, 0, 0);   // Pan along world X
-    const Vector3 world_forward = Vector3(0, 0, -1); // Pan along world Z
-    const Vector3 view_forward = (-t.basis[2]).normalized(); // Zoom along view
+  Vector3 panMovement;
+  Vector3 zoomMovement;
+  Transform3D transform = get_global_transform();
 
-    if (input->is_action_pressed("camForward"))
-    {
-      movement += world_forward;
-    }
-    if (input->is_action_pressed("camBackward"))
-    {
-      movement -= world_forward;
-    }
-    if (input->is_action_pressed("camLeft"))
-    {
-      movement -= world_right;
-    }
-    if (input->is_action_pressed("camRight"))
-    {
-      movement += world_right;
-    }
-    if (input->is_action_pressed("camZoomMin"))
-    {
-      movement += view_forward;
-    }
-    if (input->is_action_pressed("camZoomMax"))
-    {
-      movement -= view_forward;
-    }
+  const Vector3 worldRight(1, 0, 0);
+  const Vector3 worldForward(0, 0, -1);
 
-    if (movement.length() > 0.001f)
-    {
-      movement = movement.normalized() * (m_speed * (float)delta);
-    }
-    set_global_position(get_global_position() + movement);
+  // get_column(2) is the forward vector in Godot
+  Vector3 viewForward = -transform.basis.get_column(2).normalized();
+
+  if (input->is_action_pressed("camForward"))
+  {
+    panMovement += worldForward;
+  }
+  if (input->is_action_pressed("camBackward"))
+  {
+    panMovement -= worldForward;
+  }
+  if (input->is_action_pressed("camLeft"))
+  {
+    panMovement -= worldRight;
+  }
+  if (input->is_action_pressed("camRight"))
+  {
+    panMovement += worldRight;
+  }
+
+  // Zoom controls, scroll wheel up/down needs to be called through 
+  // just_released since pressed doesn't register for scroll or something dunno
+  if (input->is_action_just_released("camZoomIn"))
+  {
+    zoomMovement += viewForward * m_zoomSpeed * static_cast<float>(delta);
+  }
+  if (input->is_action_just_released("camZoomOut"))
+  {
+    zoomMovement -= viewForward * m_zoomSpeed * static_cast<float>(delta);
+  }
+
+  if (panMovement.length() > 0.001f)
+  {
+    panMovement = panMovement.normalized() * (m_speed * static_cast<float>(delta));
+  }
+  else
+  {
+    panMovement = Vector3(0, 0, 0);
+  }
+
+  set_global_position(get_global_position() + panMovement + zoomMovement);
 }
