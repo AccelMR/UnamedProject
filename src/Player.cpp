@@ -37,7 +37,10 @@ void Player::_ready()
   }
 
   SceneTree* tree = get_tree();
-  tree->get_current_scene()->call_deferred("add_child", m_targetMarker);
+  if (tree)
+  {
+    tree->get_current_scene()->call_deferred("add_child", m_targetMarker);
+  }
 }
 
 void Player::_unhandled_input(const Ref<InputEvent> &event)
