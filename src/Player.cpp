@@ -34,6 +34,7 @@ void Player::_ready()
 {
   m_collider = get_node<CollisionShape3D>("CollisionShape3D");
   m_camera = get_node<Camera3D>("../CameraController");
+  m_animationPlayer = get_node<AnimationPlayer>("Model/AnimationPlayer");
 
   // Load resources
   m_resourceMarkerScene = ResourceLoader::get_singleton()->load(m_markerScenePath);
@@ -110,7 +111,7 @@ void Player::setTargetPosition(const Vector3& position, bool bShowMarker /*= fal
 
 void Player::moveToTarget(double delta)
 {
-  Vector3 vel = get_velocity();
+  Vector3 velocity = get_velocity();
   Vector3 globalPosition = get_global_position();
 
   if (m_bHasTarget)
@@ -122,13 +123,13 @@ void Player::moveToTarget(double delta)
     if (dist < m_distanceThreshold)
     {
       m_bHasTarget = false;
-      vel.x = 0;
-      vel.z = 0;
+      velocity.x = 0;
+      velocity.z = 0;
     }
     else
     {
       Vector3 dir = toTarget.normalized();
-      vel = dir * m_speed;
+      velocity = dir * m_speed;
 
       // Optional rotation
       look_at(globalPosition + dir);
@@ -136,15 +137,30 @@ void Player::moveToTarget(double delta)
   }
   else
   {
-    vel = Vector3(0, 0, 0);
+    velocity = Vector3(0, 0, 0);
+  }
+
+  if (velocity.length() > 0.1)
+  {
+    if (m_animationPlayer && m_animationPlayer->get_current_animation() != "Run/mixamo_com")
+    {
+      m_animationPlayer->play("Run/mixamo_com");
+    }
+  }
+  else
+  {
+    if (m_animationPlayer && m_animationPlayer->get_current_animation() != "Idle/mixamo_com")
+    {
+      m_animationPlayer->play("Idle/mixamo_com");
+    }
   }
 
   // Gravity
-  vel.y += get_gravity().y * delta;
+  velocity.y += get_gravity().y * delta;
 
   // Calculate Forward Direction
   m_forwardDirection = -get_global_transform().basis.get_column(2).normalized();
 
-  set_velocity(vel);
+  set_velocity(velocity);
   move_and_slide();
 }

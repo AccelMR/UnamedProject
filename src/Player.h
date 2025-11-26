@@ -2,6 +2,8 @@
 #define PLAYER_H
 
 #include <godot_cpp/classes/character_body3d.hpp>
+
+#include <godot_cpp/classes/animation_player.hpp> 
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
@@ -37,10 +39,11 @@ class Player : public CharacterBody3D
   void setTargetPosition(const Vector3& position, bool bShowMarker = false);
 
   void moveToTarget(double delta);
-  
+
  private:
   CollisionShape3D* m_collider;
   Camera3D* m_camera;
+  AnimationPlayer* m_animationPlayer;
 
   float m_speed = 5.0f;
 
