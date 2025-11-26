@@ -7,6 +7,7 @@
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/classes/viewport.hpp>
 
 #include "MouseMarker.h"
 
@@ -17,7 +18,16 @@ void Player::_bind_methods()
   ClassDB::bind_method(D_METHOD("getMarkerScenePath"), &Player::getMarkerScenePath);
   ClassDB::bind_method(D_METHOD("setMarkerScenePath", "path"), &Player::setMarkerScenePath);
 
+  ClassDB::bind_method(D_METHOD("setMoveButton", "button"), &Player::setMoveButton);
+  ClassDB::bind_method(D_METHOD("getMoveButton"), &Player::getMoveButton);
+
   ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), "setMarkerScenePath", "getMarkerScenePath");
+  ADD_PROPERTY(PropertyInfo(Variant::INT, 
+               "moveButton", 
+               PROPERTY_HINT_ENUM, 
+               "Left:1,Right:2,Middle:3"), 
+               "setMoveButton", 
+               "getMoveButton");
 }
 
 void Player::_ready()
@@ -46,39 +56,64 @@ void Player::_ready()
   }
 }
 
-void Player::_unhandled_input(const Ref<InputEvent> &event)
+void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
   if (!m_camera)
   {
     return;
   }
 
-  Ref<InputEventMouseButton> mouseEvent = event;
-  if (mouseEvent.is_valid() && mouseEvent->is_pressed() &&
-      mouseEvent->get_button_index() == MouseButton::MOUSE_BUTTON_LEFT)
+  if (event->is_action_pressed("moveClick")) 
   {
-    Vector2 mouse_pos = mouseEvent->get_position();
-    Vector3 from = m_camera->project_ray_origin(mouse_pos);
-    Vector3 to = from + m_camera->project_ray_normal(mouse_pos) * 10000.0f; // Ugly magic number
-
-    PhysicsDirectSpaceState3D* space = get_world_3d()->get_direct_space_state();
-    Ref<PhysicsRayQueryParameters3D> query = PhysicsRayQueryParameters3D::create(from, to);
-
-    Dictionary hit = space->intersect_ray(query);
-    if (!hit.is_empty())
-    {
-      m_targetPosition = hit["position"];
-      m_bHasTarget = true;
-
-      if (m_targetMarker)
-      {
-        m_targetMarker->updateMarkerPosition(m_targetPosition);
-      }
-    }
+    m_bIsMovementButtonPressed = true;
+    setTargetPosition(tryRayCastToGround(get_viewport()->get_mouse_position()), true);
+  } 
+  else if (event->is_action_released("moveClick")) 
+  {
+    m_bIsMovementButtonPressed = false;
   }
 }
 
 void Player::_physics_process(double delta)
+{
+  if (m_bIsMovementButtonPressed)
+  {
+    setTargetPosition(tryRayCastToGround(get_viewport()->get_mouse_position()));
+  }
+  moveToTarget(delta);
+}
+
+Vector3 Player::tryRayCastToGround(const Vector2& mousePosition)
+{
+ Vector2 mouse_pos = get_viewport()->get_mouse_position();
+  Vector3 from = m_camera->project_ray_origin(mouse_pos);
+  Vector3 to = from + m_camera->project_ray_normal(mouse_pos) * m_distanceToGroundRaycast;
+
+  PhysicsDirectSpaceState3D* space = get_world_3d()->get_direct_space_state();
+  // We only want to hit the ground, which is layer 2 (set in Editor)
+  Ref<PhysicsRayQueryParameters3D> query = PhysicsRayQueryParameters3D::create(from, to, 2);
+
+  Dictionary hit = space->intersect_ray(query);
+  if (!hit.is_empty())
+  {
+    return hit["position"];
+  }
+
+  UtilityFunctions::push_warning("Raycast to ground failed, mouse position: " + mousePosition);
+  return this->get_position();
+}
+
+void Player::setTargetPosition(const Vector3& position, bool bShowMarker /*= false*/)
+{
+  m_targetPosition = position;
+  m_bHasTarget = true;
+  if (m_targetMarker && bShowMarker)
+  {
+    m_targetMarker->updateMarkerPosition(position);
+  }
+}
+
+void Player::moveToTarget(double delta)
 {
   Vector3 vel = get_velocity();
 
@@ -88,7 +123,7 @@ void Player::_physics_process(double delta)
     to_target.y = 0;
 
     float dist = to_target.length();
-    if (dist < 0.1f)
+    if (dist < m_distanceThreshold)
     {
       m_bHasTarget = false;
       vel.x = 0;
@@ -99,7 +134,7 @@ void Player::_physics_process(double delta)
       Vector3 dir = to_target.normalized();
       vel = dir * m_speed;
 
-      // Rotar opcional
+      // Optional rotation
       look_at(get_global_position() + dir);
     }
   }
@@ -109,7 +144,7 @@ void Player::_physics_process(double delta)
   }
 
   // Gravity
-  vel.y += get_gravity().y;
+  vel.y += get_gravity().y * delta;
 
   set_velocity(vel);
   move_and_slide();

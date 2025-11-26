@@ -5,9 +5,58 @@ REM =========================
 REM Config
 REM =========================
 set SUBMODULE_DIR=godot-cpp
+set "PYTHON_EXE="
+set "PYTHON_VERSION="
+set "SCONS_CMD="
 
 echo.
 echo === Checking prerequisites ===
+
+REM --- Check Python >= 3.8 ---
+call :try_python "python"
+if not defined PYTHON_EXE call :try_python "py -3"
+
+if not defined PYTHON_EXE (
+    echo [ERROR] Necesitas Python 3.8 o mayor (python/py -3 en PATH).
+    echo Instala Python 3.8+ y vuelve a ejecutar este script.
+    pause
+    exit /b 1
+)
+echo [OK] Python !PYTHON_VERSION! encontrado: !PYTHON_EXE!
+
+REM --- Check pip ---
+"!PYTHON_EXE!" -m pip --version >nul 2>nul
+if errorlevel 1 (
+    echo [ERROR] pip no esta disponible en este Python. Ejecuta "!PYTHON_EXE! -m ensurepip" o instala pip y reintenta.
+    pause
+    exit /b 1
+)
+
+REM --- Check scons/SCons (PATH or python -m scons) ---
+where scons >nul 2>nul && set "SCONS_CMD=scons"
+if not defined SCONS_CMD where SCons >nul 2>nul && set "SCONS_CMD=SCons"
+
+if not defined SCONS_CMD (
+    echo [WARN] scons no esta en PATH. Probando python -m scons...
+    "!PYTHON_EXE!" -m scons --version >nul 2>nul
+    if errorlevel 1 (
+        "!PYTHON_EXE!" -m SCons --version >nul 2>nul
+    )
+    if errorlevel 1 (
+        echo Intentando instalar scons via pip...
+        "!PYTHON_EXE!" -m pip install --user scons
+        "!PYTHON_EXE!" -m scons --version >nul 2>nul
+        if errorlevel 1 (
+            echo [ERROR] No se pudo usar ni instalar scons. Agrega scons a PATH o instala manualmente.
+            pause
+            exit /b 1
+        )
+    )
+    set "SCONS_CMD=!PYTHON_EXE! -m scons"
+    echo [OK] scons disponible via python -m scons
+) else (
+    echo [OK] scons/SCons disponible en PATH.
+)
 
 REM --- Check git ---
 where git >nul 2>nul
@@ -88,7 +137,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-scons
+%SCONS_CMD%
 if errorlevel 1 (
     echo [ERROR] Fallo scons dentro de %SUBMODULE_DIR%.
     popd
@@ -101,7 +150,7 @@ REM Build main project
 REM =========================
 echo.
 echo === Building main project ===
-scons
+%SCONS_CMD%
 if errorlevel 1 (
     echo [ERROR] Fallo scons en el proyecto principal.
     exit /b 1
@@ -110,3 +159,23 @@ if errorlevel 1 (
 echo.
 echo === DONE ===
 exit /b 0
+
+
+REM =========================
+REM Helpers
+REM =========================
+:try_python
+set "_CAND=%~1"
+for /f "delims=" %%v in ('!_CAND! --version 2^>nul') do set "_VERSTR=%%v"
+if not defined _VERSTR goto :eof
+for /f "delims=" %%v in ('!_CAND! -c "import sys; print(f'{sys.version_info[0]}.{sys.version_info[1]}')" 2^>nul') do set "PYTHON_VERSION=%%v"
+if not defined PYTHON_VERSION goto :eof
+for /f "tokens=1,2 delims=." %%a in ("!PYTHON_VERSION!") do (
+    set "_MAJ=%%a"
+    set "_MIN=%%b"
+)
+if "!_MAJ!"=="" goto :eof
+if !_MAJ! LSS 3 goto :eof
+if !_MAJ! EQU 3 if !_MIN! LSS 8 goto :eof
+set "PYTHON_EXE=!_CAND!"
+goto :eof
