@@ -58,11 +58,6 @@ void Player::_ready()
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
-  if (!m_camera)
-  {
-    return;
-  }
-
   if (event->is_action_pressed("moveClick")) 
   {
     m_bIsMovementButtonPressed = true;
@@ -116,13 +111,14 @@ void Player::setTargetPosition(const Vector3& position, bool bShowMarker /*= fal
 void Player::moveToTarget(double delta)
 {
   Vector3 vel = get_velocity();
+  Vector3 globalPosition = get_global_position();
 
   if (m_bHasTarget)
   {
-    Vector3 to_target = m_targetPosition - get_global_position();
-    to_target.y = 0;
+    Vector3 toTarget = m_targetPosition - globalPosition;
+    toTarget.y = 0;
 
-    float dist = to_target.length();
+    float dist = toTarget.length();
     if (dist < m_distanceThreshold)
     {
       m_bHasTarget = false;
@@ -131,11 +127,11 @@ void Player::moveToTarget(double delta)
     }
     else
     {
-      Vector3 dir = to_target.normalized();
+      Vector3 dir = toTarget.normalized();
       vel = dir * m_speed;
 
       // Optional rotation
-      look_at(get_global_position() + dir);
+      look_at(globalPosition + dir);
     }
   }
   else
@@ -145,6 +141,9 @@ void Player::moveToTarget(double delta)
 
   // Gravity
   vel.y += get_gravity().y * delta;
+
+  // Calculate Forward Direction
+  m_forwardDirection = -get_global_transform().basis.get_column(2).normalized();
 
   set_velocity(vel);
   move_and_slide();
