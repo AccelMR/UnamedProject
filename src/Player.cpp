@@ -36,6 +36,7 @@ void Player::_ready()
   if (!m_targetMarker)
   {
     UtilityFunctions::push_warning("Could not instance Marker scene");
+    return;
   }
 
   SceneTree* tree = get_tree();
@@ -71,7 +72,7 @@ void Player::_unhandled_input(const Ref<InputEvent> &event)
 
       if (m_targetMarker)
       {
-        m_targetMarker->setPosition(m_targetPosition);
+        m_targetMarker->updateMarkerPosition(m_targetPosition);
       }
     }
   }

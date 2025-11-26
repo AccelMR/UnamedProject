@@ -43,8 +43,9 @@ class Player : public CharacterBody3D
   // Editor exposed variables
   String m_markerScenePath = "res://Scenes/Marker.tscn";
 
-  //Resource Dependencies
+  // Resource Dependencies
   Ref<PackedScene> m_resourceMarkerScene;
 };
 
 #endif
+

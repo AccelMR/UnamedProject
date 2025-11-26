@@ -28,7 +28,7 @@ void MouseMarker::_process(double delta)
 
 }
 
-void MouseMarker::setPosition(const Vector3& position) 
+void MouseMarker::updateMarkerPosition(const Vector3& position) 
 {
   set_global_position(position);
   m_bIsMarkJustPlaced = true;
