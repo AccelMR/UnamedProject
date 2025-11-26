@@ -3,6 +3,7 @@
 #include "CameraController.h"
 #include "MouseMarker.h"
 #include "Player.h"
+#include "Weapon.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -20,6 +21,7 @@ void initialize_example_module(ModuleInitializationLevel p_level)
   GDREGISTER_RUNTIME_CLASS(CameraController);
   GDREGISTER_RUNTIME_CLASS(MouseMarker);
   GDREGISTER_RUNTIME_CLASS(Player);
+	GDREGISTER_RUNTIME_CLASS(Weapon);
 }
 
 void uninitialize_example_module(ModuleInitializationLevel p_level)

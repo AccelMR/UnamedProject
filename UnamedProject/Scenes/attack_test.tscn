@@ -1,0 +1,77 @@
+[gd_scene load_steps=9 format=3 uid="uid://bbc1u1tg0txld"]
+
+[ext_resource type="Environment" uid="uid://x4d4wqn4pk0d" path="res://Environments/Skybox.tres" id="1_w2yyd"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sp6gf"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_6pikb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sp6gf"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_n06nb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5wn1n"]
+size = Vector3(2.0141296, 0.061523438, 1.9974976)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_w2yyd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2dvbh"]
+albedo_color = Color(0.34117648, 0.38431373, 0.011764706, 1)
+
+[node name="AttackTest" type="Node3D" unique_id=1765200552]
+
+[node name="Player" type="Player" parent="." unique_id=1892344410]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8111086, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=518289994]
+shape = SubResource("CapsuleShape3D_sp6gf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player" unique_id=1788758897]
+mesh = SubResource("CapsuleMesh_6pikb")
+
+[node name="Weapon" type="Weapon" parent="Player" unique_id=46725563]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6375016, 0.3400184, -0.48291767)
+axis_lock_linear_y = true
+gravity_scale = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/Weapon" unique_id=1777384938]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("BoxShape3D_sp6gf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Weapon" unique_id=1055821377]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("BoxMesh_n06nb")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=384292039]
+transform = Transform3D(1, 0, 0, 0, 0.7888267, 0.6146157, 0, -0.6146157, 0.7888267, 0, 2.0446343, 6.108289)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=49487284]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -0.0071868896, -0.008300781, 0.00015258789)
+disable_mode = 1
+axis_lock_linear_x = true
+axis_lock_linear_y = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1606667032]
+visible = false
+shape = SubResource("BoxShape3D_5wn1n")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1122439241]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0051357555, 0.008501816, 2.3040771e-05)
+mesh = SubResource("PlaneMesh_w2yyd")
+surface_material_override/0 = SubResource("StandardMaterial3D_2dvbh")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=400002653]
+environment = ExtResource("1_w2yyd")
+
+[node name="Sun" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=723568446]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 23.992943, 0)
+light_energy = 5.055
+light_indirect_energy = 1.9
+
+[node name="CameraController" type="CameraController" parent="." unique_id=1438049739]
+transform = Transform3D(1, 0, 0, 0, 0.7431448, 0.6691306, 0, -0.6691306, 0.7431448, -0.189, 16.44, 8.439)
+current = true
