@@ -15,7 +15,7 @@ void MouseMarker::_process(double delta)
   Vector3 currentScale = get_scale();
   if (m_bIsMarkJustPlaced)
   {
-    //Decrese size over time
+    //Decrease size over time
     const float shrinkAmount = m_markShrinkSpeed * static_cast<float>(delta);
     currentScale -= Vector3(shrinkAmount, shrinkAmount, shrinkAmount);
     set_scale(currentScale);
