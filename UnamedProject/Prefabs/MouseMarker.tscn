@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://oc8yf7u42wdx"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_1nvqs"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l2r0u"]
+albedo_color = Color(1, 0, 0, 1)
+
+[node name="MouseMarker" type="Node3D" unique_id=2112890890]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1356879466]
+mesh = SubResource("SphereMesh_1nvqs")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2r0u")
