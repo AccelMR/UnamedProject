@@ -37,7 +37,7 @@ class Player : public CharacterBody3D
   void setTargetPosition(const Vector3& position, bool bShowMarker = false);
 
   void moveToTarget(double delta);
-
+  
  private:
   CollisionShape3D* m_collider;
   Camera3D* m_camera;
@@ -47,6 +47,7 @@ class Player : public CharacterBody3D
   bool m_bHasTarget = false;
   bool m_bIsMovementButtonPressed = false;
   Vector3 m_targetPosition;
+  Vector3 m_forwardDirection;
 
   MouseMarker* m_targetMarker = nullptr;
 
