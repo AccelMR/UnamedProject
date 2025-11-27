@@ -1,6 +1,8 @@
 #include "Player.h"
+
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
+#include <godot_cpp/classes/input_event_joypad_motion.hpp>
 #include <godot_cpp/classes/physics_direct_space_state3d.hpp>
 #include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
@@ -55,18 +57,32 @@ void Player::_ready()
   {
     tree->get_current_scene()->call_deferred("add_child", m_targetMarker);
   }
+
+  m_inputManager = get_node<InputManager>("/root/GlobalInputManager");
+  if (!m_inputManager)
+  {
+    UtilityFunctions::push_warning("Player: Could not find GlobalInputManager node");
+    return;
+  }
+
+  m_inputManager->connect("onModeChanged", 
+                          Callable(this, "onInputModeChanged"));
 }
 
-void Player::_unhandled_input(const Ref<InputEvent>& event)
+void Player::_input(const Ref<InputEvent>& event)
 {
-  if (event->is_action_pressed("moveClick")) 
+  InputManager::InputMode currentInputMode = m_inputManager->getInputMode();
+  if (currentInputMode == InputManager::InputMode::INPUT_MODE_KVM)
   {
-    m_bIsMovementButtonPressed = true;
-    setTargetPosition(tryRayCastToGround(get_viewport()->get_mouse_position()), true);
-  } 
-  else if (event->is_action_released("moveClick")) 
-  {
-    m_bIsMovementButtonPressed = false;
+    if (event->is_action_pressed("moveClick")) 
+    {
+      m_bIsMovementButtonPressed = true;
+      setTargetPosition(tryRayCastToGround(get_viewport()->get_mouse_position()), true);
+    } 
+    else if (event->is_action_released("moveClick")) 
+    {
+      m_bIsMovementButtonPressed = false;
+    }
   }
 }
 
@@ -76,6 +92,22 @@ void Player::_physics_process(double delta)
   {
     setTargetPosition(tryRayCastToGround(get_viewport()->get_mouse_position()));
   }
+  if (m_inputManager->getInputMode() == InputManager::InputMode::INPUT_MODE_GAMEPAD)
+  {
+    Vector2 axisInput = Input::get_singleton()->get_vector("moveLeft", 
+                                                           "moveRight", 
+                                                           "moveForward", 
+                                                           "moveBackward");
+    if (axisInput.length() > 0.1f)
+    {
+      Vector3 moveDirection = Vector3(axisInput.x, 0, axisInput.y);
+      m_forwardDirection += moveDirection.normalized();
+      m_forwardDirection = m_forwardDirection.normalized();
+      
+      setTargetPosition(get_global_position() + m_forwardDirection, true);
+    }
+  }
+  
   moveToTarget(delta);
 }
 
