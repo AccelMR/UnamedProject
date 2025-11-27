@@ -9,9 +9,12 @@
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
 
+#include "InputManager.h"
+
 using namespace godot;
 
 class MouseMarker;
+class InputManager;
 
 class Player : public CharacterBody3D
 {
@@ -22,7 +25,7 @@ class Player : public CharacterBody3D
   ~Player() = default;
 
   void _ready() override;
-  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _input(const Ref<InputEvent>& event) override;
   void _physics_process(double delta) override;
 
   String getMarkerScenePath() const { return m_markerScenePath; }
@@ -34,16 +37,18 @@ class Player : public CharacterBody3D
  protected:
   static void _bind_methods();
 
- private: 
+ private:
   Vector3 tryRayCastToGround(const Vector2& mousePosition);
   void setTargetPosition(const Vector3& position, bool bShowMarker = false);
-
+  
   void moveToTarget(double delta);
 
+  
  private:
   CollisionShape3D* m_collider;
   Camera3D* m_camera;
   AnimationPlayer* m_animationPlayer;
+  InputManager* m_inputManager;
 
   float m_speed = 5.0f;
 
