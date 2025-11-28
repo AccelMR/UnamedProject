@@ -3,6 +3,8 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/input.hpp>
 
+#include "InputManager.h"
+
 using namespace godot;
 
 void CameraController::_bind_methods() 
@@ -19,8 +21,9 @@ void CameraController::_bind_methods()
 
 void CameraController::_ready()
 {
-  // Nada especial por ahora
+  m_inputManager = InputManager::getGlobalInputManager(this);
 }
+
 void CameraController::_physics_process(double delta)
 {
   Input* input = Input::get_singleton();
@@ -35,30 +38,39 @@ void CameraController::_physics_process(double delta)
   // get_column(2) is the forward vector in Godot
   Vector3 viewForward = -transform.basis.get_column(2).normalized();
 
-  if (input->is_action_pressed("camForward"))
+  if (m_inputManager->getInputMode() == InputManager::INPUT_MODE_KVM)
   {
-    panMovement += worldForward;
+    if (input->is_action_pressed("camForward"))
+    {
+      panMovement += worldForward;
+    }
+    if (input->is_action_pressed("camBackward"))
+    {
+      panMovement -= worldForward;
+    }
+    if (input->is_action_pressed("camLeft"))
+    {
+      panMovement -= worldRight;
+    }
+    if (input->is_action_pressed("camRight"))
+    {
+      panMovement += worldRight;
+    }
   }
-  if (input->is_action_pressed("camBackward"))
+  else if (m_inputManager->getInputMode() == InputManager::INPUT_MODE_GAMEPAD)
   {
-    panMovement -= worldForward;
-  }
-  if (input->is_action_pressed("camLeft"))
-  {
-    panMovement -= worldRight;
-  }
-  if (input->is_action_pressed("camRight"))
-  {
-    panMovement += worldRight;
+    Vector2 camMovement = input->get_vector("camLeft", "camRight", "camBackward", "camForward");
+    panMovement += worldRight * camMovement.x;
+    panMovement += worldForward * camMovement.y;
   }
 
   // Zoom controls, scroll wheel up/down needs to be called through 
   // just_released since pressed doesn't register for scroll or something dunno
-  if (input->is_action_just_released("camZoomIn"))
+  if (input->is_action_just_released("camZoomIn") || input->is_action_pressed("camZoomIn"))
   {
     zoomMovement += viewForward * m_zoomSpeed * static_cast<float>(delta);
   }
-  if (input->is_action_just_released("camZoomOut"))
+  if (input->is_action_just_released("camZoomOut") || input->is_action_pressed("camZoomOut"))
   {
     zoomMovement -= viewForward * m_zoomSpeed * static_cast<float>(delta);
   }

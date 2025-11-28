@@ -5,6 +5,8 @@
 
 using namespace godot;
 
+class InputManager;
+
 class CameraController : public Camera3D
 {
   GDCLASS(CameraController, Camera3D);
@@ -29,4 +31,6 @@ private:
   // Expose to editor
   float m_speed = 8.0f;
   float m_zoomSpeed = 4.0f;
+
+  InputManager* m_inputManager = nullptr;
 };

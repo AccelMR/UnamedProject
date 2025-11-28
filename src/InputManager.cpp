@@ -8,7 +8,26 @@
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 
+
 using namespace godot;
+
+InputManager* InputManager::getGlobalInputManager(Node* context)
+{
+  if (!context)
+  {
+    UtilityFunctions::push_warning("InputManager::getGlobalInputManager: context node is null");
+    return nullptr;
+  }
+
+  InputManager* inputManager = context->get_node<InputManager>("/root/GlobalInputManager");
+  if (!inputManager)
+  {
+    UtilityFunctions::push_warning("Player: Could not find GlobalInputManager node");
+    return nullptr;
+  }
+
+  return inputManager;
+}
 
 void InputManager::_bind_methods()
 {

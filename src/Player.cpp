@@ -58,14 +58,9 @@ void Player::_ready()
     tree->get_current_scene()->call_deferred("add_child", m_targetMarker);
   }
 
-  m_inputManager = get_node<InputManager>("/root/GlobalInputManager");
-  if (!m_inputManager)
-  {
-    UtilityFunctions::push_warning("Player: Could not find GlobalInputManager node");
-    return;
-  }
-
-  m_inputManager->connect("onModeChanged", 
+  // Check happens inside getGlobalInputManager so if it fails we get a warning
+  m_inputManager = InputManager::getGlobalInputManager(this);
+  m_inputManager->connect("onModeChanged",
                           Callable(this, "onInputModeChanged"));
 }
 
