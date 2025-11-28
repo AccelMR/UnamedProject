@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://h5a1ro1l4dp1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bprmo"]
+size = Vector3(2.0141296, 0.061523438, 1.9974976)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ix3kg"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ix3kg"]
+albedo_color = Color(0.34117648, 0.38431373, 0.011764706, 1)
+
+[node name="Floor" type="StaticBody3D" unique_id=1521552997]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+disable_mode = 1
+collision_layer = 3
+collision_mask = 2
+axis_lock_linear_x = true
+axis_lock_linear_y = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1663437663]
+visible = false
+shape = SubResource("BoxShape3D_bprmo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1895480487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0051357555, 0.008501816, 2.3040771e-05)
+mesh = SubResource("PlaneMesh_ix3kg")
+surface_material_override/0 = SubResource("StandardMaterial3D_ix3kg")
