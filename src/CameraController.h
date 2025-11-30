@@ -3,9 +3,9 @@
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 
-using namespace godot;
+#include "InputManager.h"
 
-class InputManager;
+using namespace godot;
 
 class CameraController : public Camera3D
 {

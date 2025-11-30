@@ -3,8 +3,6 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/input.hpp>
 
-#include "InputManager.h"
-
 using namespace godot;
 
 void CameraController::_bind_methods() 

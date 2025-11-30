@@ -11,7 +11,11 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/viewport.hpp>
 
+#include "InputManager.h"
 #include "MouseMarker.h"
+
+// Skills
+#include "Skills/SkillFireCone.h"
 
 using namespace godot;
 
@@ -62,6 +66,11 @@ void Player::_ready()
   m_inputManager = InputManager::getGlobalInputManager(this);
   m_inputManager->connect("onModeChanged",
                           Callable(this, "onInputModeChanged"));
+
+  // Skill creation
+  m_skillFireCone = memnew(SkillFireCone());
+  m_skillFireCone->init(this);
+  call_deferred("add_child", m_skillFireCone);
 }
 
 void Player::_input(const Ref<InputEvent>& event)
@@ -102,15 +111,22 @@ void Player::_physics_process(double delta)
       setTargetPosition(get_global_position() + m_forwardDirection, true);
     }
   }
+
+  if (Input::get_singleton()->is_action_just_pressed("skill_1"))
+  {
+    if (m_skillFireCone)
+    {
+      m_skillFireCone->execute();
+    }
+  }
   
   moveToTarget(delta);
 }
 
 Vector3 Player::tryRayCastToGround(const Vector2& mousePosition)
 {
- Vector2 mouse_pos = get_viewport()->get_mouse_position();
-  Vector3 from = m_camera->project_ray_origin(mouse_pos);
-  Vector3 to = from + m_camera->project_ray_normal(mouse_pos) * m_distanceToGroundRaycast;
+  Vector3 from = m_camera->project_ray_origin(mousePosition);
+  Vector3 to = from + m_camera->project_ray_normal(mousePosition) * m_distanceToGroundRaycast;
 
   PhysicsDirectSpaceState3D* space = get_world_3d()->get_direct_space_state();
   // We only want to hit the ground, which is layer 2 (set in Editor)

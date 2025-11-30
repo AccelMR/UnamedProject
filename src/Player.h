@@ -9,12 +9,11 @@
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
 
-#include "InputManager.h"
-
 using namespace godot;
 
-class MouseMarker;
 class InputManager;
+class MouseMarker;
+class SkillFireCone;
 
 class Player : public CharacterBody3D
 {
@@ -49,6 +48,8 @@ class Player : public CharacterBody3D
   Camera3D* m_camera;
   AnimationPlayer* m_animationPlayer;
   InputManager* m_inputManager;
+
+  SkillFireCone* m_skillFireCone = nullptr;
 
   float m_speed = 5.0f;
 
