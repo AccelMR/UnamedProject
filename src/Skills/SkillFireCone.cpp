@@ -15,6 +15,20 @@
 
 using namespace godot;
 
+FireConeData& FireConeData::operator=(Ref<FireConeResource> resource)
+{
+  if (resource.is_valid())
+  {
+    coneAngle = resource->getConeAngle();
+    coneLength = resource->getConeLength();
+    fireDamage = resource->getFireDamage();
+    duration = resource->getDuration();
+    meshMaterial = resource->GetMeshMaterial();
+    vfxMaterial = resource->GetVfxMaterial();
+  }
+  return *this;
+}
+
 void FireConeResource::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("setConeAngle", "angle"), &FireConeResource::setConeAngle);
@@ -32,6 +46,9 @@ void FireConeResource::_bind_methods()
   ClassDB::bind_method(D_METHOD("SetVfxMaterial", "material"), &FireConeResource::SetVfxMaterial);
   ClassDB::bind_method(D_METHOD("GetVfxMaterial"), &FireConeResource::GetVfxMaterial);
 
+  ClassDB::bind_method(D_METHOD("SetMeshMaterial", "material"), &FireConeResource::SetMeshMaterial);
+  ClassDB::bind_method(D_METHOD("GetMeshMaterial"), &FireConeResource::GetMeshMaterial);
+
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneAngle"), "setConeAngle", "getConeAngle");
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneLength"), "setConeLength", "getConeLength");
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fireDamage"), "setFireDamage", "getFireDamage");
@@ -45,6 +62,15 @@ void FireConeResource::_bind_methods()
           "ParticleProcessMaterial"),
       "SetVfxMaterial",
       "GetVfxMaterial");
+
+  ADD_PROPERTY(
+      PropertyInfo(
+          Variant::OBJECT,
+          "meshMaterial",
+          PROPERTY_HINT_RESOURCE_TYPE, 
+          "StandardMaterial3D"),
+      "SetMeshMaterial",
+      "GetMeshMaterial");
 }
 
 void SkillFireCone::_bind_methods()
@@ -60,7 +86,7 @@ void SkillFireCone::_bind_methods()
 SkillNode* FireConeResource::CreateSkillNodeForThisResource()
 {
   UtilityFunctions::print("FireConeResource::CreateSkillNodeForThisResource called");
-  SkillFireCone* skillNode = memnew(SkillFireCone());
+  SkillFireCone* skillNode = memnew(SkillFireCone);
   skillNode->setSkillResource(Ref<FireConeResource>(this));
   return skillNode;
 }
@@ -70,11 +96,7 @@ void SkillFireCone::init(Node *owner)
   m_owner = owner;
   if (m_skillResource.is_valid())
   {
-    m_fireConeData.coneAngle = m_skillResource->getConeAngle();
-    m_fireConeData.coneLength = m_skillResource->getConeLength();
-    m_fireConeData.fireDamage = m_skillResource->getFireDamage();
-    m_fireConeData.duration = m_skillResource->getDuration();
-    m_fireConeData.vfxMaterial = m_skillResource->GetVfxMaterial();
+    m_fireConeData = m_skillResource;
   }
   else
   {

@@ -5,12 +5,13 @@
 #include <godot_cpp/classes/box_shape3d.hpp>
 #include <godot_cpp/classes/particle_process_material.hpp>
 #include <godot_cpp/classes/gpu_particles3d.hpp>
-#include <godot_cpp/classes/sphere_mesh.hpp>
+#include <godot_cpp/classes/quad_mesh.hpp>
+#include <godot_cpp/classes/standard_material3d.hpp>
 
 using namespace godot;
 
 
-void FireCone::_bind_methods() 
+void FireCone::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("ActivateFor", "duration"), &FireCone::ActivateFor);
   ClassDB::bind_method(D_METHOD("IsActive"), &FireCone::IsActive);
@@ -76,22 +77,36 @@ void FireCone::SetupCone(const FireConeData& data)
     call_deferred("add_child", m_fireParticles);
 
     m_fireParticles->set_amount(1000);
-    m_fireParticles->set_lifetime(1.0f);
+    m_fireParticles->set_lifetime(data.duration * 0.7f);
     m_fireParticles->set_one_shot(false);
   }
-  
+
   if (data.vfxMaterial.is_valid())
   {
     UtilityFunctions::print("FireCone::SetupCone: Setting up VFX Material for fire particles.");
 
-    Ref<SphereMesh> sphereMesh;
-    sphereMesh.instantiate();
-    sphereMesh->set_radius(0.3f);
-    sphereMesh->set_material(data.vfxMaterial);
-  
-    data.vfxMaterial->set_color(Color(1.0f, 0.5f, 0.2f, 0.8f));
-    m_fireParticles->set_process_material(data.vfxMaterial);
-    m_fireParticles->set_draw_pass_mesh(0, sphereMesh);
+    Ref<ParticleProcessMaterial> processMaterial = data.vfxMaterial;
+    processMaterial->set_color(Color(1.0f, 0.5f, 0.2f, 0.8f));
+    m_fireParticles->set_process_material(processMaterial);
+
+    Ref<QuadMesh> quadMesh;
+    quadMesh.instantiate();
+    quadMesh->set_size(Vector2(0.5f, 0.5f));
+
+    if (data.meshMaterial.is_valid())
+    {
+      Ref<StandardMaterial3D> meshMaterial = data.meshMaterial;
+      meshMaterial->set_billboard_mode(StandardMaterial3D::BILLBOARD_PARTICLES);
+      quadMesh->set_material(meshMaterial);
+      m_fireParticles->set_material_override(meshMaterial);
+    }
+    else
+    {
+      UtilityFunctions::push_warning("FireCone::SetupCone: No Mesh Material provided for fire particles.");
+    }
+
+    m_fireParticles->set_process_material(processMaterial);
+    m_fireParticles->set_draw_pass_mesh(0, quadMesh);
   }
   else
   {

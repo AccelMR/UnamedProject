@@ -3,10 +3,12 @@
 #include "Skills/System/SkillBase.h"
 
 #include <godot_cpp/classes/particle_process_material.hpp>
+#include <godot_cpp/classes/standard_material3d.hpp>
 
 using namespace godot;
 
 class FireCone;
+class FireConeResource;
 
 struct FireConeData
 {
@@ -15,7 +17,10 @@ struct FireConeData
   float fireDamage = 25.0f;
   float duration = 1.0f;
 
+  Ref<StandardMaterial3D> meshMaterial;
   Ref<ParticleProcessMaterial> vfxMaterial;
+
+  FireConeData& operator=(Ref<FireConeResource> resource);
 };
 
 class FireConeResource : public SkillResource
@@ -36,6 +41,9 @@ class FireConeResource : public SkillResource
 
   float getDuration() const { return m_data.duration; }
   void setDuration(float duration) { m_data.duration = duration; }
+
+  Ref<StandardMaterial3D> GetMeshMaterial() const { return m_data.meshMaterial; }
+  void SetMeshMaterial(const Ref<StandardMaterial3D>& material) { m_data.meshMaterial = material; }
 
   Ref<ParticleProcessMaterial> GetVfxMaterial() const { return m_data.vfxMaterial; }
   void SetVfxMaterial(const Ref<ParticleProcessMaterial>& material) { m_data.vfxMaterial = material; }
