@@ -5,9 +5,15 @@
 
 using namespace godot;
 
+class SkillNode;
+
 class SkillResource : public Resource
 {
   GDCLASS(SkillResource, Resource);
+
+ public:
+  virtual SkillNode* CreateSkillNodeForThisResource() { return nullptr; }
+
  protected:
   static void _bind_methods();
 };
@@ -38,4 +44,32 @@ class SkillNode : public Node, public ISkillBase
 
  protected:
   static void _bind_methods();
+};
+
+class SkillSet : public Resource
+{
+  GDCLASS(SkillSet, Resource);
+
+ public:
+
+  TypedArray<SkillResource> GetSkills() const { return m_skills; }
+  void SetSkills(const TypedArray<SkillResource>& skills) { m_skills = skills; }
+
+  SkillResource* GetSkillByIndex(int index) const
+  {
+    if (index < 0 || index >= m_skills.size())
+    {
+      return nullptr;
+    }
+
+    return Object::cast_to<SkillResource>(m_skills[index]);
+  }
+
+  void ForEachSkill(const Callable& func) const;
+
+ protected:
+  static void _bind_methods();
+
+ private:
+  TypedArray<SkillResource> m_skills;
 };

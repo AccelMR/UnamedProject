@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/area3d.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/timer.hpp>
+#include <godot_cpp/classes/gpu_particles3d.hpp>
 
 using namespace godot;
 
@@ -34,4 +35,6 @@ class FireCone : public Node3D
   CollisionShape3D* m_collisionShape = nullptr;
   Timer* m_timer = nullptr;
   bool m_isActive = false;
+
+  GPUParticles3D* m_fireParticles = nullptr;
 };

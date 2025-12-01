@@ -14,6 +14,8 @@ using namespace godot;
 class InputManager;
 class MouseMarker;
 class SkillFireCone;
+class SkillSet;
+class SkillResource;
 
 class Player : public CharacterBody3D
 {
@@ -33,6 +35,9 @@ class Player : public CharacterBody3D
   void setMoveButton(MouseButton button) { m_moveButton = button; }
   MouseButton getMoveButton() const { return m_moveButton; }
 
+  Ref<SkillSet> GetSkillSet() const { return m_skillSet; }
+  void SetSkillSet(const Ref<SkillSet>& skillSet) { m_skillSet = skillSet; }
+
  protected:
   static void _bind_methods();
 
@@ -42,6 +47,7 @@ class Player : public CharacterBody3D
   
   void moveToTarget(double delta);
 
+  void OnSkillInSet(const Ref<SkillResource> skillResource);
   
  private:
   CollisionShape3D* m_collider;
@@ -68,6 +74,8 @@ class Player : public CharacterBody3D
 
   // Resource Dependencies
   Ref<PackedScene> m_resourceMarkerScene;
+
+  Ref<SkillSet> m_skillSet;
 };
 
 #endif

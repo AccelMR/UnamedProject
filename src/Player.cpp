@@ -27,6 +27,11 @@ void Player::_bind_methods()
   ClassDB::bind_method(D_METHOD("setMoveButton", "button"), &Player::setMoveButton);
   ClassDB::bind_method(D_METHOD("getMoveButton"), &Player::getMoveButton);
 
+  ClassDB::bind_method(D_METHOD("GetSkillSet"), &Player::GetSkillSet);
+  ClassDB::bind_method(D_METHOD("SetSkillSet", "skillSet"), &Player::SetSkillSet);
+
+  ClassDB::bind_method(D_METHOD("OnSkillInSet", "skillResource"), &Player::OnSkillInSet);
+
   ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), "setMarkerScenePath", "getMarkerScenePath");
   ADD_PROPERTY(PropertyInfo(Variant::INT, 
                "moveButton", 
@@ -34,6 +39,13 @@ void Player::_bind_methods()
                "Left:1,Right:2,Middle:3"), 
                "setMoveButton", 
                "getMoveButton");
+
+
+  ADD_PROPERTY(PropertyInfo(Variant::OBJECT, 
+                            "m_skillSet", 
+                            PROPERTY_HINT_RESOURCE_TYPE, 
+                            "SkillSet"), 
+               "SetSkillSet", "GetSkillSet");
 }
 
 void Player::_ready()
@@ -67,10 +79,16 @@ void Player::_ready()
   m_inputManager->connect("onModeChanged",
                           Callable(this, "onInputModeChanged"));
 
-  // Skill creation
-  m_skillFireCone = memnew(SkillFireCone());
-  m_skillFireCone->init(this);
-  call_deferred("add_child", m_skillFireCone);
+
+  // Iterate over skillset
+  if (!m_skillSet.is_valid())
+  {
+    UtilityFunctions::push_warning("Player has no SkillSet assigned");
+    return;
+  }
+
+  Callable skillsetCallable(this, "OnSkillInSet");
+  m_skillSet->ForEachSkill(skillsetCallable);
 }
 
 void Player::_input(const Ref<InputEvent>& event)
@@ -206,4 +224,29 @@ void Player::moveToTarget(double delta)
 
   set_velocity(velocity);
   move_and_slide();
+}
+
+void Player::OnSkillInSet(const Ref<SkillResource> skillResource)
+{
+  if (!skillResource.is_valid())
+  {
+    UtilityFunctions::push_warning("Invalid SkillResource in SkillSet");
+    return;
+  }
+
+  SkillNode* skillNode = skillResource->CreateSkillNodeForThisResource();
+  if (!skillNode)
+  {
+    UtilityFunctions::push_warning("Could not create SkillNode for SkillResource");
+    return;
+  }
+
+  call_deferred("add_child", skillNode);
+
+  // TODO:  delete!!!! TEsting only hehehe
+  if (SkillFireCone* skillFireCone = Object::cast_to<SkillFireCone>(skillNode))
+  {
+    skillFireCone->init(this);
+    m_skillFireCone = skillFireCone;
+  }
 }

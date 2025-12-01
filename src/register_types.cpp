@@ -24,6 +24,7 @@ void initialize_example_module(ModuleInitializationLevel p_level)
 
   GDREGISTER_CLASS(SkillResource);
   GDREGISTER_CLASS(FireConeResource);
+  GDREGISTER_CLASS(SkillSet);
 
   GDREGISTER_RUNTIME_CLASS(CameraController);
   GDREGISTER_RUNTIME_CLASS(InputManager);

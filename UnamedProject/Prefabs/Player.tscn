@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://bwnunsxgnti6q"]
+[gd_scene load_steps=8 format=3 uid="uid://bwnunsxgnti6q"]
 
 [ext_resource type="PackedScene" uid="uid://cfkg6phbko51a" path="res://Models/TheBoss.fbx" id="1_b43ah"]
+[ext_resource type="SkillSet" uid="uid://db6jne1c4coy1" path="res://Prefabs/aa.tres" id="1_shmu5"]
 [ext_resource type="AnimationLibrary" uid="uid://d07ssqj5w2q5d" path="res://Models/Animations/Idle.fbx" id="2_shmu5"]
 [ext_resource type="AnimationLibrary" uid="uid://b5pkslwedc7pi" path="res://Models/Animations/Run.fbx" id="3_vxq8l"]
 
@@ -318,6 +319,7 @@ _data = {
 
 [node name="Player" type="Player" unique_id=636184571]
 markerScenePath = "res://Prefabs/MouseMarker.tscn"
+m_skillSet = ExtResource("1_shmu5")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1871301002]
 shape = SubResource("CapsuleShape3D_ix3kg")

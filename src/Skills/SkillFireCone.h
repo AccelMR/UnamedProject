@@ -2,6 +2,8 @@
 
 #include "Skills/System/SkillBase.h"
 
+#include <godot_cpp/classes/particle_process_material.hpp>
+
 using namespace godot;
 
 class FireCone;
@@ -12,6 +14,8 @@ struct FireConeData
   float coneLength = 10.0f;
   float fireDamage = 25.0f;
   float duration = 1.0f;
+
+  Ref<ParticleProcessMaterial> vfxMaterial;
 };
 
 class FireConeResource : public SkillResource
@@ -32,6 +36,11 @@ class FireConeResource : public SkillResource
 
   float getDuration() const { return m_data.duration; }
   void setDuration(float duration) { m_data.duration = duration; }
+
+  Ref<ParticleProcessMaterial> GetVfxMaterial() const { return m_data.vfxMaterial; }
+  void SetVfxMaterial(const Ref<ParticleProcessMaterial>& material) { m_data.vfxMaterial = material; }
+
+  SkillNode* CreateSkillNodeForThisResource() override;
 
  protected:
   static void _bind_methods();

@@ -29,10 +29,22 @@ void FireConeResource::_bind_methods()
   ClassDB::bind_method(D_METHOD("setDuration", "duration"), &FireConeResource::setDuration);
   ClassDB::bind_method(D_METHOD("getDuration"), &FireConeResource::getDuration);
 
+  ClassDB::bind_method(D_METHOD("SetVfxMaterial", "material"), &FireConeResource::SetVfxMaterial);
+  ClassDB::bind_method(D_METHOD("GetVfxMaterial"), &FireConeResource::GetVfxMaterial);
+
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneAngle"), "setConeAngle", "getConeAngle");
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneLength"), "setConeLength", "getConeLength");
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fireDamage"), "setFireDamage", "getFireDamage");
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration"), "setDuration", "getDuration");
+
+  ADD_PROPERTY(
+      PropertyInfo(
+          Variant::OBJECT,
+          "vfxMaterial",
+          PROPERTY_HINT_RESOURCE_TYPE, 
+          "ParticleProcessMaterial"),
+      "SetVfxMaterial",
+      "GetVfxMaterial");
 }
 
 void SkillFireCone::_bind_methods()
@@ -45,6 +57,14 @@ void SkillFireCone::_bind_methods()
       "setSkillResource", "getSkillResource");
 }
 
+SkillNode* FireConeResource::CreateSkillNodeForThisResource()
+{
+  UtilityFunctions::print("FireConeResource::CreateSkillNodeForThisResource called");
+  SkillFireCone* skillNode = memnew(SkillFireCone());
+  skillNode->setSkillResource(Ref<FireConeResource>(this));
+  return skillNode;
+}
+
 void SkillFireCone::init(Node *owner)
 {
   m_owner = owner;
@@ -54,6 +74,7 @@ void SkillFireCone::init(Node *owner)
     m_fireConeData.coneLength = m_skillResource->getConeLength();
     m_fireConeData.fireDamage = m_skillResource->getFireDamage();
     m_fireConeData.duration = m_skillResource->getDuration();
+    m_fireConeData.vfxMaterial = m_skillResource->GetVfxMaterial();
   }
   else
   {

@@ -1,0 +1,6 @@
+[gd_resource type="FireConeResource" load_steps=2 format=3 uid="uid://b04jelv1aqocf"]
+
+[ext_resource type="Material" uid="uid://b8ltts54dydmk" path="res://Prefabs/Simon.tres" id="1_2eti6"]
+
+[resource]
+vfxMaterial = ExtResource("1_2eti6")

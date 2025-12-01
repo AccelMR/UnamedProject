@@ -3,6 +3,9 @@
 #include "Skills/SkillFireCone.h"
 
 #include <godot_cpp/classes/box_shape3d.hpp>
+#include <godot_cpp/classes/particle_process_material.hpp>
+#include <godot_cpp/classes/gpu_particles3d.hpp>
+#include <godot_cpp/classes/sphere_mesh.hpp>
 
 using namespace godot;
 
@@ -66,6 +69,44 @@ void FireCone::SetupCone(const FireConeData& data)
   {
     m_collisionShape->set_disabled(true);
   }
+
+   if (!m_fireParticles)
+  {
+    m_fireParticles = memnew(GPUParticles3D);
+    call_deferred("add_child", m_fireParticles);
+
+    m_fireParticles->set_amount(1000);
+    m_fireParticles->set_lifetime(1.0f);
+    m_fireParticles->set_one_shot(false);
+
+    Ref<SphereMesh> sphereMesh;
+    sphereMesh.instantiate();
+    sphereMesh->set_radius(0.5f);
+    m_fireParticles->set_draw_pass_mesh(0, sphereMesh);
+  }
+
+  if (data.vfxMaterial.is_valid())
+  {
+    m_fireParticles->set_process_material(data.vfxMaterial);
+  }
+  else
+  {
+    // Crear un material muy básico por defecto
+    Ref<ParticleProcessMaterial> mat;
+    mat.instantiate();
+
+    mat->set_emission_shape(ParticleProcessMaterial::EMISSION_SHAPE_BOX);
+    mat->set_emission_box_extents(Vector3(data.coneLength * 0.5f, 0.5f, data.coneLength * 0.5f));
+    mat->set_gravity(Vector3(0, 0, 0));
+    mat->set_param_min(ParticleProcessMaterial::PARAM_INITIAL_LINEAR_VELOCITY, 4.0f);
+    mat->set_param_max(ParticleProcessMaterial::PARAM_INITIAL_LINEAR_VELOCITY, 6.0f);
+    mat->set_lifetime_randomness(0.2);
+
+    m_fireParticles->set_process_material(mat);
+  }
+
+  m_fireParticles->set_position(m_collisionShape->get_position());
+  m_fireParticles->set_emitting(false);
 }
 
 void FireCone::ActivateFor(float duration)
@@ -95,6 +136,11 @@ void FireCone::ActivateFor(float duration)
 
   UtilityFunctions::print("FireCone::ActivateFor: Activating cone for " + String::num(duration) + " seconds.");
 
+  if (m_fireParticles)
+  {
+    m_fireParticles->set_emitting(true);
+  }
+
   m_timer->start(duration);
 }
 
@@ -111,6 +157,11 @@ void FireCone::OnTimerTimeout()
   if (m_collisionShape)
   {
     m_collisionShape->set_disabled(true);
+  }
+
+  if (m_fireParticles)
+  {
+    m_fireParticles->set_emitting(false);
   }
 }
 
