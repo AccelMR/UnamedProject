@@ -7,9 +7,6 @@
 
 [node name="AccelTesting2" type="Node3D" unique_id=1137397554]
 
-[node name="Player" parent="." unique_id=636184571 instance=ExtResource("1_jhwkq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4319968, 6.7017956, 0)
-
 [node name="Floor" parent="." unique_id=1521552997 instance=ExtResource("2_hmalh")]
 transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -0.0071868896, -0.008300781, 0.00015258789)
 
@@ -23,3 +20,6 @@ light_indirect_energy = 1.9
 
 [node name="CameraController" parent="." unique_id=47223066 instance=ExtResource("4_6ev8a")]
 transform = Transform3D(1, 0, 0, 0, 0.7431448, 0.6691306, 0, -0.6691306, 0.7431448, -0.189, 16.44, 8.439)
+
+[node name="Player" parent="." unique_id=636184571 instance=ExtResource("1_jhwkq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4615128, 4.0699625, 7.809149)

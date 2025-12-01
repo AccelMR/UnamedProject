@@ -1,6 +1,6 @@
 [gd_resource type="SkillSet" load_steps=2 format=3 uid="uid://db6jne1c4coy1"]
 
-[ext_resource type="FireConeResource" uid="uid://b04jelv1aqocf" path="res://Prefabs/Skills/Resources/BasicFireCone.tres" id="1_vcndt"]
+[ext_resource type="FireConeResource" uid="uid://b04jelv1aqocf" path="res://Prefabs/Skills/Resources/BasicFireCone.tres" id="1_sop1g"]
 
 [resource]
-m_skills = Array[SkillResource]([ExtResource("1_vcndt")])
+m_skills = Array[SkillResource]([ExtResource("1_sop1g")])

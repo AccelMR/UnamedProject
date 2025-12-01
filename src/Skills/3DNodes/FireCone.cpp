@@ -78,31 +78,24 @@ void FireCone::SetupCone(const FireConeData& data)
     m_fireParticles->set_amount(1000);
     m_fireParticles->set_lifetime(1.0f);
     m_fireParticles->set_one_shot(false);
+  }
+  
+  if (data.vfxMaterial.is_valid())
+  {
+    UtilityFunctions::print("FireCone::SetupCone: Setting up VFX Material for fire particles.");
 
     Ref<SphereMesh> sphereMesh;
     sphereMesh.instantiate();
-    sphereMesh->set_radius(0.5f);
-    m_fireParticles->set_draw_pass_mesh(0, sphereMesh);
-  }
-
-  if (data.vfxMaterial.is_valid())
-  {
+    sphereMesh->set_radius(0.3f);
+    sphereMesh->set_material(data.vfxMaterial);
+  
+    data.vfxMaterial->set_color(Color(1.0f, 0.5f, 0.2f, 0.8f));
     m_fireParticles->set_process_material(data.vfxMaterial);
+    m_fireParticles->set_draw_pass_mesh(0, sphereMesh);
   }
   else
   {
-    // Crear un material muy básico por defecto
-    Ref<ParticleProcessMaterial> mat;
-    mat.instantiate();
-
-    mat->set_emission_shape(ParticleProcessMaterial::EMISSION_SHAPE_BOX);
-    mat->set_emission_box_extents(Vector3(data.coneLength * 0.5f, 0.5f, data.coneLength * 0.5f));
-    mat->set_gravity(Vector3(0, 0, 0));
-    mat->set_param_min(ParticleProcessMaterial::PARAM_INITIAL_LINEAR_VELOCITY, 4.0f);
-    mat->set_param_max(ParticleProcessMaterial::PARAM_INITIAL_LINEAR_VELOCITY, 6.0f);
-    mat->set_lifetime_randomness(0.2);
-
-    m_fireParticles->set_process_material(mat);
+    UtilityFunctions::push_warning("FireCone::SetupCone: No VFX Material provided for fire particles.");
   }
 
   m_fireParticles->set_position(m_collisionShape->get_position());

@@ -32,7 +32,9 @@ void Player::_bind_methods()
 
   ClassDB::bind_method(D_METHOD("OnSkillInSet", "skillResource"), &Player::OnSkillInSet);
 
-  ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), "setMarkerScenePath", "getMarkerScenePath");
+  ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), 
+               "setMarkerScenePath", "getMarkerScenePath");
+
   ADD_PROPERTY(PropertyInfo(Variant::INT, 
                "moveButton", 
                PROPERTY_HINT_ENUM, 
@@ -42,7 +44,7 @@ void Player::_bind_methods()
 
 
   ADD_PROPERTY(PropertyInfo(Variant::OBJECT, 
-                            "m_skillSet", 
+                            "skillSet",
                             PROPERTY_HINT_RESOURCE_TYPE, 
                             "SkillSet"), 
                "SetSkillSet", "GetSkillSet");

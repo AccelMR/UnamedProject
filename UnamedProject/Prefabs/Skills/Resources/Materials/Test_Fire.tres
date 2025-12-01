@@ -2,6 +2,10 @@
 
 [resource]
 lifetime_randomness = 1.0
+emission_shape_scale = Vector3(5.25, 3.085, -3.9)
 emission_shape = 1
 emission_sphere_radius = 1.0
-color = Color(0, 0, 1, 1)
+inherit_velocity_ratio = 0.982
+spread = 36.545
+gravity = Vector3(0, 9.8, 0)
+color = Color(1, 0, 1, 1)
