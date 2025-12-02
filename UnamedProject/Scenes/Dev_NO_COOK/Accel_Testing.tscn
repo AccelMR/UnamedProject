@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dj5gost6kgbod"]
+[gd_scene load_steps=6 format=3 uid="uid://dj5gost6kgbod"]
 
 [ext_resource type="Environment" uid="uid://x4d4wqn4pk0d" path="res://Environments/Skybox.tres" id="1_bprmo"]
 [ext_resource type="PackedScene" uid="uid://bwnunsxgnti6q" path="res://Prefabs/Player.tscn" id="1_jhwkq"]
 [ext_resource type="PackedScene" uid="uid://h5a1ro1l4dp1" path="res://Prefabs/Floor.tscn" id="2_hmalh"]
 [ext_resource type="PackedScene" uid="uid://cjqc7ke5ajhho" path="res://Prefabs/CameraController.tscn" id="4_6ev8a"]
+[ext_resource type="PackedScene" uid="uid://bsbmjn3wh8vmb" path="res://UI/GameInterface.tscn" id="5_hmalh"]
 
 [node name="AccelTesting2" type="Node3D" unique_id=1137397554]
 
@@ -22,4 +23,6 @@ light_indirect_energy = 1.9
 transform = Transform3D(1, 0, 0, 0, 0.7431448, 0.6691306, 0, -0.6691306, 0.7431448, -0.189, 16.44, 8.439)
 
 [node name="Player" parent="." unique_id=636184571 instance=ExtResource("1_jhwkq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.910285, 4.0699625, -55.29478)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.910285, 4.0699625, -3.6248703)
+
+[node name="GameInterface" parent="." unique_id=1182872408 instance=ExtResource("5_hmalh")]

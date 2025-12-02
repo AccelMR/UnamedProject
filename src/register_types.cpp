@@ -4,6 +4,10 @@
 #include "InputManager.h"
 #include "MouseMarker.h"
 #include "Player.h"
+#include "CameraController.h"
+#include "Agent.h"
+#include "Enemy.h"
+#include "MouseMarker.h"
 
 #include "Skills/System/SkillBase.h"
 #include "Skills/SkillFireCone.h"
@@ -26,13 +30,15 @@ void initialize_example_module(ModuleInitializationLevel p_level)
   GDREGISTER_CLASS(FireConeResource);
   GDREGISTER_CLASS(SkillSet);
 
+  GDREGISTER_RUNTIME_CLASS(Agent);
   GDREGISTER_RUNTIME_CLASS(CameraController);
+  GDREGISTER_RUNTIME_CLASS(Enemy);
+  GDREGISTER_RUNTIME_CLASS(FireCone);
   GDREGISTER_RUNTIME_CLASS(InputManager);
   GDREGISTER_RUNTIME_CLASS(MouseMarker);
   GDREGISTER_RUNTIME_CLASS(Player);
   GDREGISTER_RUNTIME_CLASS(SkillNode);
   GDREGISTER_RUNTIME_CLASS(SkillFireCone);
-  GDREGISTER_RUNTIME_CLASS(FireCone);
 }
 
 void uninitialize_example_module(ModuleInitializationLevel p_level)
