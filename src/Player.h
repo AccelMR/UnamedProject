@@ -15,6 +15,7 @@ using namespace godot;
 
 class MouseMarker;
 class InputManager;
+class Weapon;
 
 class Player : public CharacterBody3D
 {
@@ -26,6 +27,7 @@ class Player : public CharacterBody3D
 
   void _ready() override;
   void _input(const Ref<InputEvent>& event) override;
+  void _process(double p_delta) override;
   void _physics_process(double delta) override;
 
   String getMarkerScenePath() const { return m_markerScenePath; }
@@ -34,8 +36,13 @@ class Player : public CharacterBody3D
   void setMoveButton(MouseButton button) { m_moveButton = button; }
   MouseButton getMoveButton() const { return m_moveButton; }
 
+  void SetAttackCooldown(float _newCooldown) { m_attackCooldown = _newCooldown; }
+  float GetAttackCooldown() const { return m_attackCooldown; }
+
  protected:
   static void _bind_methods();
+
+  void Attack();
 
  private:
   Vector3 tryRayCastToGround(const Vector2& mousePosition);
@@ -43,17 +50,22 @@ class Player : public CharacterBody3D
   
   void moveToTarget(double delta);
 
+  void LookAtTheMouse();
+
   
  private:
   CollisionShape3D* m_collider;
   Camera3D* m_camera;
   AnimationPlayer* m_animationPlayer;
   InputManager* m_inputManager;
+  Weapon* m_currentWeapon;
 
   float m_speed = 5.0f;
+  float m_attackCooldownTimer = m_attackCooldown;
 
   bool m_bHasTarget = false;
   bool m_bIsMovementButtonPressed = false;
+  bool m_bIsAttackPressed = false;
   Vector3 m_targetPosition;
   Vector3 m_forwardDirection;
 
@@ -64,6 +76,7 @@ class Player : public CharacterBody3D
   MouseButton m_moveButton = MouseButton::MOUSE_BUTTON_LEFT;
   float m_distanceThreshold = 0.1f;
   float m_distanceToGroundRaycast = 10000.0f;
+  float m_attackCooldown = 0.5f;
 
   // Resource Dependencies
   Ref<PackedScene> m_resourceMarkerScene;

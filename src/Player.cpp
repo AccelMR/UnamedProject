@@ -12,16 +12,20 @@
 #include <godot_cpp/classes/viewport.hpp>
 
 #include "MouseMarker.h"
+#include "Weapon.h"
 
 using namespace godot;
 
-void Player::_bind_methods() 
+void Player::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("getMarkerScenePath"), &Player::getMarkerScenePath);
   ClassDB::bind_method(D_METHOD("setMarkerScenePath", "path"), &Player::setMarkerScenePath);
 
   ClassDB::bind_method(D_METHOD("setMoveButton", "button"), &Player::setMoveButton);
   ClassDB::bind_method(D_METHOD("getMoveButton"), &Player::getMoveButton);
+
+  ClassDB::bind_method(D_METHOD("getAttackCooldown"), &Player::GetAttackCooldown);
+  ClassDB::bind_method(D_METHOD("setAttackCooldown", "_newCooldown"), &Player::SetAttackCooldown);
 
   ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), "setMarkerScenePath", "getMarkerScenePath");
   ADD_PROPERTY(PropertyInfo(Variant::INT, 
@@ -30,6 +34,18 @@ void Player::_bind_methods()
                "Left:1,Right:2,Middle:3"), 
                "setMoveButton", 
                "getMoveButton");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT,
+               "attackCooldown",
+               PROPERTY_HINT_RANGE,
+               "0.0f,10.0,0.1"),
+               "setAttackCooldown",
+               "getAttackCooldown");
+}
+
+void Player::Attack()
+{
+  m_attackCooldownTimer = m_attackCooldown;
+  m_currentWeapon->Attack();
 }
 
 void Player::_ready()
@@ -37,6 +53,7 @@ void Player::_ready()
   m_collider = get_node<CollisionShape3D>("CollisionShape3D");
   m_camera = get_node<Camera3D>("../CameraController");
   m_animationPlayer = get_node<AnimationPlayer>("Model/AnimationPlayer");
+  m_currentWeapon = get_node<Weapon>("Weapon");
 
   // Load resources
   m_resourceMarkerScene = ResourceLoader::get_singleton()->load(m_markerScenePath);
@@ -74,14 +91,51 @@ void Player::_input(const Ref<InputEvent>& event)
   InputManager::InputMode currentInputMode = m_inputManager->getInputMode();
   if (currentInputMode == InputManager::InputMode::INPUT_MODE_KVM)
   {
-    if (event->is_action_pressed("moveClick")) 
+    if (event->is_action_pressed("attack"))
     {
+      setTargetPosition(get_position());
+      LookAtTheMouse();
+      if(m_attackCooldownTimer <= 0)
+      {
+        m_bIsAttackPressed = true;
+        Attack();
+      }
+
+      UtilityFunctions::print("Attack Pressed");
+      return;
+    }
+    else if (event->is_action_released("attack") && m_bIsAttackPressed)
+    {
+      m_bIsAttackPressed = false;
+      UtilityFunctions::print("Attack released.");
+      return;
+    }
+
+    if (event->is_action_pressed("moveClick"))
+    {
+      UtilityFunctions::print("Move pressed.");
       m_bIsMovementButtonPressed = true;
       setTargetPosition(tryRayCastToGround(get_viewport()->get_mouse_position()), true);
     } 
     else if (event->is_action_released("moveClick")) 
     {
+      UtilityFunctions::print("Move released.");
       m_bIsMovementButtonPressed = false;
+    }
+  }
+}
+
+void Player::_process(double p_delta)
+{
+  m_attackCooldownTimer -= p_delta;
+
+  if (m_bIsAttackPressed)
+  {
+    LookAtTheMouse();
+
+    if (m_attackCooldownTimer <= 0)
+    {
+      Attack();
     }
   }
 }
@@ -113,7 +167,7 @@ void Player::_physics_process(double delta)
 
 Vector3 Player::tryRayCastToGround(const Vector2& mousePosition)
 {
- Vector2 mouse_pos = get_viewport()->get_mouse_position();
+  Vector2 mouse_pos = get_viewport()->get_mouse_position();
   Vector3 from = m_camera->project_ray_origin(mouse_pos);
   Vector3 to = from + m_camera->project_ray_normal(mouse_pos) * m_distanceToGroundRaycast;
 
@@ -195,4 +249,15 @@ void Player::moveToTarget(double delta)
 
   set_velocity(velocity);
   move_and_slide();
+}
+
+void Player::LookAtTheMouse()
+{
+  Vector3 mousePos = tryRayCastToGround(get_viewport()->get_mouse_position());
+  Vector3 globalPos = get_global_position();
+  mousePos.y = globalPos.y;
+  Vector3 direction = (mousePos - globalPos).normalized();
+
+  look_at(globalPos + direction);
+  m_forwardDirection = -get_global_transform().basis.get_column(2).normalized();
 }
