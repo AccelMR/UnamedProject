@@ -4,14 +4,26 @@
     {
       "label": "build_extension_debug",
       "type": "shell",
-      "command": "scons",
+
+      "command": "",
+
       "args": [
         "debug_symbols=yes",
         "target=template_debug"
       ],
+
       "options": {
         "cwd": "${workspaceFolder}"
       },
+
+      "linux": {
+        "command": "scons"
+      },
+
+      "windows": {
+        "command": "py -m SCons"
+      },
+
       "problemMatcher": []
     }
   ]

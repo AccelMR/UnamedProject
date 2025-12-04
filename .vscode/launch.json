@@ -5,7 +5,7 @@
       "name": "Godot Debug (Fast)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/../godot_PU/bin/godot.linuxbsd.editor.x86_64",
+      "program": "",
       "args": [
         "--path",
         "${workspaceFolder}/UnamedProject/",
@@ -27,13 +27,19 @@
           "text": "-enable-pretty-printing",
           "ignoreFailures": true
         }
-      ]
+      ],
+      "linux": {
+        "program": "${workspaceFolder}/../godot_PU/bin/godot.linuxbsd.editor.x86_64"
+      },
+      "windows": {
+        "program": "${workspaceFolder}\\..\\godot_PU\\bin\\godot.windows.editor.x86_64.exe"
+      }
     },
     {
       "name": "Godot Debug (Rebuild + Run)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/../godot_PU/bin/godot.linuxbsd.editor.x86_64",
+      "program": "",
       "args": [
         "--path",
         "${workspaceFolder}/UnamedProject/",
@@ -56,7 +62,13 @@
           "text": "-enable-pretty-printing",
           "ignoreFailures": true
         }
-      ]
+      ],
+      "linux": {
+        "program": "${workspaceFolder}/../godot_PU/bin/godot.linuxbsd.editor.x86_64"
+      },
+      "windows": {
+        "program": "${workspaceFolder}\\..\\godot_PU\\bin\\godot.windows.editor.x86_64.exe"
+      }
     }
   ]
 }
