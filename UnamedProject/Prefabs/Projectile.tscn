@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://chrwt1tt1ew5e"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_fpva8"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_gxdo8"]
+
+[node name="Projectile" type="Projectile" unique_id=516251990]
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=607332896]
+transform = Transform3D(0.15, 0, 0, 0, 0.15, 0, 0, 0, 0.15, 0, 0, 0)
+shape = SubResource("SphereShape3D_fpva8")
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=1485110957]
+transform = Transform3D(0.15, 0, 0, 0, 0.15, 0, 0, 0, 0.15, 0, 0, 0)
+mesh = SubResource("SphereMesh_gxdo8")
