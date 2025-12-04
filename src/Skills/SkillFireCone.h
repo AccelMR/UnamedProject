@@ -48,7 +48,7 @@ class FireConeResource : public SkillResource
   Ref<ParticleProcessMaterial> GetVfxMaterial() const { return m_data.vfxMaterial; }
   void SetVfxMaterial(const Ref<ParticleProcessMaterial>& material) { m_data.vfxMaterial = material; }
 
-  SkillNode* CreateSkillNodeForThisResource() override;
+  SkillNode* CreateSkillNodeForThisResource(const Node* owner) override;
 
  protected:
   static void _bind_methods();

@@ -13,9 +13,12 @@
 
 #include "InputManager.h"
 #include "MouseMarker.h"
+#include "UI/PlayerUI.h"
 
 // Skills
+#include "Skills/System/SkillSet.h"
 #include "Skills/SkillFireCone.h"
+
 
 using namespace godot;
 
@@ -29,8 +32,6 @@ void Player::_bind_methods()
 
   ClassDB::bind_method(D_METHOD("GetSkillSet"), &Player::GetSkillSet);
   ClassDB::bind_method(D_METHOD("SetSkillSet", "skillSet"), &Player::SetSkillSet);
-
-  ClassDB::bind_method(D_METHOD("OnSkillInSet", "skillResource"), &Player::OnSkillInSet);
 
   ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), 
                "setMarkerScenePath", "getMarkerScenePath");
@@ -78,9 +79,7 @@ void Player::_ready()
 
   // Check happens inside getGlobalInputManager so if it fails we get a warning
   m_inputManager = InputManager::getGlobalInputManager(this);
-  m_inputManager->connect("onModeChanged",
-                          Callable(this, "onInputModeChanged"));
-
+  m_inputManager->connect("onModeChanged", Callable(this, "onInputModeChanged"));
 
   // Iterate over skillset
   if (!m_skillSet.is_valid())
@@ -89,13 +88,28 @@ void Player::_ready()
     return;
   }
 
-  Callable skillsetCallable(this, "OnSkillInSet");
-  m_skillSet->ForEachSkill(skillsetCallable);
+  m_skillSet->InstantiateSkills(this);
+
+  // Connect UI
+  m_playerUI = get_node<PlayerUI>("PlayerUI");
+  if (m_playerUI)
+  {
+    m_playerUI->PopulateSkillList(m_skillSet.ptr());
+  }
 }
 
-void Player::_input(const Ref<InputEvent>& event)
+void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
-  InputManager::InputMode currentInputMode = m_inputManager->getInputMode();
+  const Viewport* viewport = get_viewport();
+  if (viewport && viewport->is_input_handled())
+  {
+    // Not sure if this is the best way to handle this, but if the viewport has already handled
+    // the input (e.g. clicking on UI), we skip processing it here.
+    UtilityFunctions::print("Viewport input handled, skipping Player input");
+      return;
+  }
+
+  const InputManager::InputMode currentInputMode = m_inputManager->getInputMode();
   if (currentInputMode == InputManager::InputMode::INPUT_MODE_KVM)
   {
     if (event->is_action_pressed("moveClick")) 
@@ -226,29 +240,4 @@ void Player::moveToTarget(double delta)
 
   set_velocity(velocity);
   move_and_slide();
-}
-
-void Player::OnSkillInSet(const Ref<SkillResource> skillResource)
-{
-  if (!skillResource.is_valid())
-  {
-    UtilityFunctions::push_warning("Invalid SkillResource in SkillSet");
-    return;
-  }
-
-  SkillNode* skillNode = skillResource->CreateSkillNodeForThisResource();
-  if (!skillNode)
-  {
-    UtilityFunctions::push_warning("Could not create SkillNode for SkillResource");
-    return;
-  }
-
-  call_deferred("add_child", skillNode);
-
-  // TODO:  delete!!!! TEsting only hehehe
-  if (SkillFireCone* skillFireCone = Object::cast_to<SkillFireCone>(skillNode))
-  {
-    skillFireCone->init(this);
-    m_skillFireCone = skillFireCone;
-  }
 }

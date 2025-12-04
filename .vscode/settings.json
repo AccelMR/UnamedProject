@@ -4,6 +4,11 @@
     "fstream": "cpp",
     "istream": "cpp",
     "numeric": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "string_view": "cpp",
+    "format": "cpp",
+    "functional": "cpp",
+    "tuple": "cpp",
+    "variant": "cpp"
   }
 }

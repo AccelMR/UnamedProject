@@ -49,6 +49,8 @@ void FireConeResource::_bind_methods()
   ClassDB::bind_method(D_METHOD("SetMeshMaterial", "material"), &FireConeResource::SetMeshMaterial);
   ClassDB::bind_method(D_METHOD("GetMeshMaterial"), &FireConeResource::GetMeshMaterial);
 
+  ClassDB::bind_method(D_METHOD("CreateSkillNodeForThisResource", "owner"), &FireConeResource::CreateSkillNodeForThisResource); 
+
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneAngle"), "setConeAngle", "getConeAngle");
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneLength"), "setConeLength", "getConeLength");
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fireDamage"), "setFireDamage", "getFireDamage");
@@ -83,12 +85,13 @@ void SkillFireCone::_bind_methods()
       "setSkillResource", "getSkillResource");
 }
 
-SkillNode* FireConeResource::CreateSkillNodeForThisResource()
+SkillNode* FireConeResource::CreateSkillNodeForThisResource(const Node*)
 {
   UtilityFunctions::print("FireConeResource::CreateSkillNodeForThisResource called");
   SkillFireCone* skillNode = memnew(SkillFireCone);
-  skillNode->setSkillResource(Ref<FireConeResource>(this));
-  return skillNode;
+  return nullptr;
+  // skillNode->setSkillResource(Ref<FireConeResource>(this));
+  // return skillNode;
 }
 
 void SkillFireCone::init(Node *owner)

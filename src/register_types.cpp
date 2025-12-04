@@ -10,8 +10,12 @@
 #include "MouseMarker.h"
 
 #include "Skills/System/SkillBase.h"
+#include "Skills/System/SkillSet.h"
+
 #include "Skills/SkillFireCone.h"
 #include "Skills/3DNodes/FireCone.h"
+
+#include "UI/PlayerUI.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -37,8 +41,11 @@ void initialize_example_module(ModuleInitializationLevel p_level)
   GDREGISTER_RUNTIME_CLASS(InputManager);
   GDREGISTER_RUNTIME_CLASS(MouseMarker);
   GDREGISTER_RUNTIME_CLASS(Player);
+  
   GDREGISTER_RUNTIME_CLASS(SkillNode);
   GDREGISTER_RUNTIME_CLASS(SkillFireCone);
+
+  GDREGISTER_RUNTIME_CLASS(PlayerUI);
 }
 
 void uninitialize_example_module(ModuleInitializationLevel p_level)

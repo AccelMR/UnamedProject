@@ -13,6 +13,7 @@ using namespace godot;
 
 class InputManager;
 class MouseMarker;
+class PlayerUI;
 class SkillFireCone;
 class SkillSet;
 class SkillResource;
@@ -26,7 +27,9 @@ class Player : public CharacterBody3D
   ~Player() = default;
 
   void _ready() override;
-  void _input(const Ref<InputEvent>& event) override;
+  // Changed _input to _unhandled_input to avoid consuming input events meant for other nodes
+  // _input happens before GUI then _unhandled_input
+  void _unhandled_input(const Ref<InputEvent>& event) override;
   void _physics_process(double delta) override;
 
   String getMarkerScenePath() const { return m_markerScenePath; }
@@ -46,14 +49,13 @@ class Player : public CharacterBody3D
   void setTargetPosition(const Vector3& position, bool bShowMarker = false);
   
   void moveToTarget(double delta);
-
-  void OnSkillInSet(const Ref<SkillResource> skillResource);
   
  private:
   CollisionShape3D* m_collider;
   Camera3D* m_camera;
   AnimationPlayer* m_animationPlayer;
   InputManager* m_inputManager;
+  PlayerUI* m_playerUI;
 
   SkillFireCone* m_skillFireCone = nullptr;
 
