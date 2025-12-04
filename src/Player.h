@@ -9,12 +9,14 @@
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
 
-#include "InputManager.h"
-
 using namespace godot;
 
-class MouseMarker;
 class InputManager;
+class MouseMarker;
+class PlayerUI;
+class SkillFireCone;
+class SkillSet;
+class SkillResource;
 class Weapon;
 
 class Player : public CharacterBody3D
@@ -26,7 +28,9 @@ class Player : public CharacterBody3D
   ~Player() = default;
 
   void _ready() override;
-  void _input(const Ref<InputEvent>& event) override;
+  // Changed _input to _unhandled_input to avoid consuming input events meant for other nodes
+  // _input happens before GUI then _unhandled_input
+  void _unhandled_input(const Ref<InputEvent>& event) override;
   void _process(double p_delta) override;
   void _physics_process(double delta) override;
 
@@ -35,6 +39,8 @@ class Player : public CharacterBody3D
 
   void setMoveButton(MouseButton button) { m_moveButton = button; }
   MouseButton getMoveButton() const { return m_moveButton; }
+  Ref<SkillSet> GetSkillSet() const { return m_skillSet; }
+  void SetSkillSet(const Ref<SkillSet>& skillSet) { m_skillSet = skillSet; }
 
   void SetAttackCooldown(float _newCooldown) { m_attackCooldown = _newCooldown; }
   float GetAttackCooldown() const { return m_attackCooldown; }
@@ -50,14 +56,14 @@ class Player : public CharacterBody3D
   
   void moveToTarget(double delta);
 
-  void LookAtTheMouse();
-
-  
+    void LookAtTheMouse();
  private:
   CollisionShape3D* m_collider;
   Camera3D* m_camera;
   AnimationPlayer* m_animationPlayer;
   InputManager* m_inputManager;
+  PlayerUI* m_playerUI;
+  SkillFireCone* m_skillFireCone = nullptr;
   Weapon* m_currentWeapon;
 
   float m_speed = 5.0f;
@@ -80,6 +86,8 @@ class Player : public CharacterBody3D
 
   // Resource Dependencies
   Ref<PackedScene> m_resourceMarkerScene;
+
+  Ref<SkillSet> m_skillSet;
 };
 
 #endif

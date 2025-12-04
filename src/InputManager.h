@@ -17,6 +17,8 @@ class InputManager : public Node
   InputManager() = default;
   ~InputManager() = default;
 
+  static InputManager* getGlobalInputManager(Node* context);
+
   InputMode getInputMode() const { return m_inputMode; }
   void setInputMode(InputMode mode);
 

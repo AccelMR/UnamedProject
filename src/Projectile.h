@@ -40,7 +40,7 @@ private:
   float m_lifetime = 5.0f;
 
   Vector3 m_direction = Vector3(0, 0, -1);
-  Vector3 m_velocity = Vector3::ZERO;
+  Vector3 m_velocity = Vector3(0, 0, 0);
 };
 
 #endif // !PROJECTILE_H

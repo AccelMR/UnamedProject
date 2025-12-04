@@ -9,7 +9,10 @@ void Projectile::_ready()
 
 void Projectile::_physics_process(double delta)
 {
-  // Physics processing code here
+  // Update position based on velocity and direction
+  m_velocity = m_direction * m_speed;
+  Vector3 new_position = get_global_position() + m_velocity * static_cast<float>(delta);
+  set_global_position(new_position);
 }
 
 void Projectile::_bind_methods()

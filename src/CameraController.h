@@ -3,6 +3,8 @@
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 
+#include "InputManager.h"
+
 using namespace godot;
 
 class CameraController : public Camera3D
@@ -29,4 +31,6 @@ private:
   // Expose to editor
   float m_speed = 8.0f;
   float m_zoomSpeed = 4.0f;
+
+  InputManager* m_inputManager = nullptr;
 };

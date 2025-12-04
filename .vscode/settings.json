@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "unordered_map": "cpp",
+    "fstream": "cpp",
+    "istream": "cpp",
+    "numeric": "cpp",
+    "sstream": "cpp",
+    "string_view": "cpp",
+    "format": "cpp",
+    "functional": "cpp",
+    "tuple": "cpp",
+    "variant": "cpp"
+  }
+}

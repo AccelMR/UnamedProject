@@ -11,8 +11,14 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/viewport.hpp>
 
+#include "InputManager.h"
 #include "MouseMarker.h"
 #include "Weapon.h"
+#include "UI/PlayerUI.h"
+
+// Skills
+#include "Skills/System/SkillSet.h"
+#include "Skills/SkillFireCone.h"
 
 using namespace godot;
 
@@ -27,7 +33,11 @@ void Player::_bind_methods()
   ClassDB::bind_method(D_METHOD("getAttackCooldown"), &Player::GetAttackCooldown);
   ClassDB::bind_method(D_METHOD("setAttackCooldown", "_newCooldown"), &Player::SetAttackCooldown);
 
-  ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), "setMarkerScenePath", "getMarkerScenePath");
+  ClassDB::bind_method(D_METHOD("GetSkillSet"), &Player::GetSkillSet);
+  ClassDB::bind_method(D_METHOD("SetSkillSet", "skillSet"), &Player::SetSkillSet);
+
+  ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), 
+               "setMarkerScenePath", "getMarkerScenePath");
   ADD_PROPERTY(PropertyInfo(Variant::INT, 
                "moveButton", 
                PROPERTY_HINT_ENUM, 
@@ -40,6 +50,12 @@ void Player::_bind_methods()
                "0.0f,10.0,0.1"),
                "setAttackCooldown",
                "getAttackCooldown");
+ADD_PROPERTY(PropertyInfo(Variant::OBJECT, 
+                            "skillSet",
+                            PROPERTY_HINT_RESOURCE_TYPE, 
+                            "SkillSet"), 
+               "SetSkillSet", "GetSkillSet");
+
 }
 
 void Player::Attack()
@@ -75,20 +91,39 @@ void Player::_ready()
     tree->get_current_scene()->call_deferred("add_child", m_targetMarker);
   }
 
-  m_inputManager = get_node<InputManager>("/root/GlobalInputManager");
-  if (!m_inputManager)
+  // Check happens inside getGlobalInputManager so if it fails we get a warning
+  m_inputManager = InputManager::getGlobalInputManager(this);
+  m_inputManager->connect("onModeChanged", Callable(this, "onInputModeChanged"));
+
+  // Iterate over skillset
+  if (!m_skillSet.is_valid())
   {
-    UtilityFunctions::push_warning("Player: Could not find GlobalInputManager node");
+    UtilityFunctions::push_warning("Player has no SkillSet assigned");
     return;
   }
 
-  m_inputManager->connect("onModeChanged", 
-                          Callable(this, "onInputModeChanged"));
+  m_skillSet->InstantiateSkills(this);
+
+  // Connect UI
+  m_playerUI = get_node<PlayerUI>("PlayerUI");
+  if (m_playerUI)
+  {
+    m_playerUI->PopulateSkillList(m_skillSet.ptr());
+  }
 }
 
-void Player::_input(const Ref<InputEvent>& event)
+void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
-  InputManager::InputMode currentInputMode = m_inputManager->getInputMode();
+  const Viewport* viewport = get_viewport();
+  if (viewport && viewport->is_input_handled())
+  {
+    // Not sure if this is the best way to handle this, but if the viewport has already handled
+    // the input (e.g. clicking on UI), we skip processing it here.
+    UtilityFunctions::print("Viewport input handled, skipping Player input");
+      return;
+  }
+
+  const InputManager::InputMode currentInputMode = m_inputManager->getInputMode();
   if (currentInputMode == InputManager::InputMode::INPUT_MODE_KVM)
   {
     if (event->is_action_pressed("attack"))
@@ -161,15 +196,22 @@ void Player::_physics_process(double delta)
       setTargetPosition(get_global_position() + m_forwardDirection, true);
     }
   }
+
+  if (Input::get_singleton()->is_action_just_pressed("skill_1"))
+  {
+    if (m_skillFireCone)
+    {
+      m_skillFireCone->execute();
+    }
+  }
   
   moveToTarget(delta);
 }
 
 Vector3 Player::tryRayCastToGround(const Vector2& mousePosition)
 {
-  Vector2 mouse_pos = get_viewport()->get_mouse_position();
-  Vector3 from = m_camera->project_ray_origin(mouse_pos);
-  Vector3 to = from + m_camera->project_ray_normal(mouse_pos) * m_distanceToGroundRaycast;
+  Vector3 from = m_camera->project_ray_origin(mousePosition);
+  Vector3 to = from + m_camera->project_ray_normal(mousePosition) * m_distanceToGroundRaycast;
 
   PhysicsDirectSpaceState3D* space = get_world_3d()->get_direct_space_state();
   // We only want to hit the ground, which is layer 2 (set in Editor)
