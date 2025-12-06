@@ -19,10 +19,10 @@ FireConeData& FireConeData::operator=(Ref<FireConeResource> resource)
 {
   if (resource.is_valid())
   {
-    coneAngle = resource->getConeAngle();
-    coneLength = resource->getConeLength();
-    fireDamage = resource->getFireDamage();
-    duration = resource->getDuration();
+    coneAngle = resource->GetConeAngle();
+    coneLength = resource->GetConeLength();
+    fireDamage = resource->GetFireDamage();
+    duration = resource->GetDuration();
     meshMaterial = resource->GetMeshMaterial();
     vfxMaterial = resource->GetVfxMaterial();
   }
@@ -31,17 +31,17 @@ FireConeData& FireConeData::operator=(Ref<FireConeResource> resource)
 
 void FireConeResource::_bind_methods()
 {
-  ClassDB::bind_method(D_METHOD("setConeAngle", "angle"), &FireConeResource::setConeAngle);
-  ClassDB::bind_method(D_METHOD("getConeAngle"), &FireConeResource::getConeAngle);
+  ClassDB::bind_method(D_METHOD("SetConeAngle", "angle"), &FireConeResource::SetConeAngle);
+  ClassDB::bind_method(D_METHOD("GetConeAngle"), &FireConeResource::GetConeAngle);
 
-  ClassDB::bind_method(D_METHOD("setConeLength", "length"), &FireConeResource::setConeLength);
-  ClassDB::bind_method(D_METHOD("getConeLength"), &FireConeResource::getConeLength);
+  ClassDB::bind_method(D_METHOD("SetConeLength", "length"), &FireConeResource::SetConeLength);
+  ClassDB::bind_method(D_METHOD("GetConeLength"), &FireConeResource::GetConeLength);
 
-  ClassDB::bind_method(D_METHOD("setFireDamage", "damage"), &FireConeResource::setFireDamage);
-  ClassDB::bind_method(D_METHOD("getFireDamage"), &FireConeResource::getFireDamage);
+  ClassDB::bind_method(D_METHOD("SetFireDamage", "damage"), &FireConeResource::SetFireDamage);
+  ClassDB::bind_method(D_METHOD("GetFireDamage"), &FireConeResource::GetFireDamage);
 
-  ClassDB::bind_method(D_METHOD("setDuration", "duration"), &FireConeResource::setDuration);
-  ClassDB::bind_method(D_METHOD("getDuration"), &FireConeResource::getDuration);
+  ClassDB::bind_method(D_METHOD("SetDuration", "duration"), &FireConeResource::SetDuration);
+  ClassDB::bind_method(D_METHOD("GetDuration"), &FireConeResource::GetDuration);
 
   ClassDB::bind_method(D_METHOD("SetVfxMaterial", "material"), &FireConeResource::SetVfxMaterial);
   ClassDB::bind_method(D_METHOD("GetVfxMaterial"), &FireConeResource::GetVfxMaterial);
@@ -51,10 +51,10 @@ void FireConeResource::_bind_methods()
 
   ClassDB::bind_method(D_METHOD("CreateSkillNodeForThisResource", "owner"), &FireConeResource::CreateSkillNodeForThisResource); 
 
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneAngle"), "setConeAngle", "getConeAngle");
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneLength"), "setConeLength", "getConeLength");
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fireDamage"), "setFireDamage", "getFireDamage");
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration"), "setDuration", "getDuration");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneAngle"), "SetConeAngle", "GetConeAngle");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneLength"), "SetConeLength", "GetConeLength");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fireDamage"), "SetFireDamage", "GetFireDamage");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration"), "SetDuration", "GetDuration");
 
   ADD_PROPERTY(
       PropertyInfo(

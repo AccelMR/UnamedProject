@@ -30,17 +30,17 @@ class FireConeResource : public SkillResource
   FireConeResource() = default;
   virtual ~FireConeResource() = default;
 
-  float getConeAngle() const { return  m_data.coneAngle; }
-  void setConeAngle(float angle) { m_data.coneAngle = angle; }
+  float GetConeAngle() const { return  m_data.coneAngle; }
+  void SetConeAngle(float angle) { m_data.coneAngle = angle; }
 
-  float getConeLength() const { return m_data.coneLength; }
-  void setConeLength(float length) { m_data.coneLength = length; }
+  float GetConeLength() const { return m_data.coneLength; }
+  void SetConeLength(float length) { m_data.coneLength = length; }
 
-  void setFireDamage(float damage) { m_data.fireDamage = damage; }
-  float getFireDamage() const { return m_data.fireDamage; }
+  void SetFireDamage(float damage) { m_data.fireDamage = damage; }
+  float GetFireDamage() const { return m_data.fireDamage; }
 
-  float getDuration() const { return m_data.duration; }
-  void setDuration(float duration) { m_data.duration = duration; }
+  float GetDuration() const { return m_data.duration; }
+  void SetDuration(float duration) { m_data.duration = duration; }
 
   Ref<StandardMaterial3D> GetMeshMaterial() const { return m_data.meshMaterial; }
   void SetMeshMaterial(const Ref<StandardMaterial3D>& material) { m_data.meshMaterial = material; }

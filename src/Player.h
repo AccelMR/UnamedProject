@@ -32,23 +32,23 @@ class Player : public CharacterBody3D
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _physics_process(double delta) override;
 
-  String getMarkerScenePath() const { return m_markerScenePath; }
-  void setMarkerScenePath(const String& path) { m_markerScenePath = path; }
+  String GetMarkerScenePath() const { return m_markerScenePath; }
+  void SetMarkerScenePath(const String& path) { m_markerScenePath = path; }
 
-  void setMoveButton(MouseButton button) { m_moveButton = button; }
-  MouseButton getMoveButton() const { return m_moveButton; }
+  void SetMoveButton(MouseButton button) { m_moveButton = button; }
+  MouseButton GetMoveButton() const { return m_moveButton; }
 
   Ref<SkillSet> GetSkillSet() const { return m_skillSet; }
   void SetSkillSet(const Ref<SkillSet>& skillSet) { m_skillSet = skillSet; }
-
+  
  protected:
   static void _bind_methods();
 
  private:
-  Vector3 tryRayCastToGround(const Vector2& mousePosition);
-  void setTargetPosition(const Vector3& position, bool bShowMarker = false);
+  Vector3 TryRayCastToGround(const Vector2& mousePosition);
+  void SetTargetPosition(const Vector3& position, bool bShowMarker = false);
   
-  void moveToTarget(double delta);
+  void MoveToTarget(double delta);
   
  private:
   CollisionShape3D* m_collider;

@@ -19,8 +19,8 @@ class InputManager : public Node
 
   static InputManager* getGlobalInputManager(Node* context);
 
-  InputMode getInputMode() const { return m_inputMode; }
-  void setInputMode(InputMode mode);
+  InputMode GetInputMode() const { return m_inputMode; }
+  void SetInputMode(InputMode mode);
 
   void _input(const Ref<InputEvent>& event) override;
 

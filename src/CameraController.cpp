@@ -7,14 +7,14 @@ using namespace godot;
 
 void CameraController::_bind_methods() 
 {
-  ClassDB::bind_method(D_METHOD("setSpeed", "speed"), &CameraController::setSpeed);
-  ClassDB::bind_method(D_METHOD("getSpeed"), &CameraController::getSpeed);
+  ClassDB::bind_method(D_METHOD("SetSpeed", "speed"), &CameraController::SetSpeed);
+  ClassDB::bind_method(D_METHOD("GetSpeed"), &CameraController::GetSpeed);
 
-  ClassDB::bind_method(D_METHOD("setZoomSpeed", "zoomSpeed"), &CameraController::setZoomSpeed);
-  ClassDB::bind_method(D_METHOD("getZoomSpeed"), &CameraController::getZoomSpeed);
+  ClassDB::bind_method(D_METHOD("SetZoomSpeed", "zoomSpeed"), &CameraController::SetZoomSpeed);
+  ClassDB::bind_method(D_METHOD("GetZoomSpeed"), &CameraController::GetZoomSpeed);
 
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "speed"), "setSpeed", "getSpeed");
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "zoomSpeed"), "setZoomSpeed", "getZoomSpeed");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "speed"), "SetSpeed", "GetSpeed");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "zoomSpeed"), "SetZoomSpeed", "GetZoomSpeed");
 }
 
 void CameraController::_ready()
@@ -36,7 +36,7 @@ void CameraController::_physics_process(double delta)
   // get_column(2) is the forward vector in Godot
   Vector3 viewForward = -transform.basis.get_column(2).normalized();
 
-  if (m_inputManager->getInputMode() == InputManager::INPUT_MODE_KVM)
+  if (m_inputManager->GetInputMode() == InputManager::INPUT_MODE_KVM)
   {
     if (input->is_action_pressed("camForward"))
     {
@@ -55,7 +55,7 @@ void CameraController::_physics_process(double delta)
       panMovement += worldRight;
     }
   }
-  else if (m_inputManager->getInputMode() == InputManager::INPUT_MODE_GAMEPAD)
+  else if (m_inputManager->GetInputMode() == InputManager::INPUT_MODE_GAMEPAD)
   {
     Vector2 camMovement = input->get_vector("camLeft", "camRight", "camBackward", "camForward");
     panMovement += worldRight * camMovement.x;
