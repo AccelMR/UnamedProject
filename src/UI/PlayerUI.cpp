@@ -57,7 +57,7 @@ void PlayerUI::CreateSkillButton(const SkillNode* skillNode)
   
   String skillName = skillResource->GetName();
   Ref<Texture2D> skillIcon = skillResource->GetIcon();
-  if (!skillIcon.is_valid())
+  if (skillIcon.is_valid())
   {
     m_skillList->add_item(skillName, skillIcon);
     UtilityFunctions::print("PlayerUI: Added skill button for " + skillName);
