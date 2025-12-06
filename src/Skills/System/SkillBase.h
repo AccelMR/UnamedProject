@@ -24,6 +24,9 @@ class SkillResource : public Resource
   void SetIcon(const Ref<Texture2D>& icon) { m_icon = icon; }
   Ref<Texture2D> GetIcon() const { return m_icon; }
 
+  void SetCooldownTime(float cooldownTime) { m_cooldownTime = cooldownTime; }
+  float GetCooldownTime() const { return m_cooldownTime; }
+
  protected:
   static void _bind_methods();
 
@@ -31,6 +34,7 @@ class SkillResource : public Resource
   String m_name;
   String m_description;
   Ref<Texture2D> m_icon;
+  float m_cooldownTime = 0.1f;
 };
 
 class ISkillBase
@@ -57,8 +61,24 @@ class SkillNode : public Node, public ISkillBase
   Node* GetOwner() const override { return nullptr; }
   Ref<SkillResource> GetSkillResource() const override { return nullptr; }
 
+  bool IsOnCooldown() const { return m_isOnCooldown; }
+
+  void AddOnExecuteCallback(const Callable& callback);
+  void RemoveOnExecuteCallback(const StringName& callbackName);
+  void ClearOnExecuteCallbacks();
+
+  void AddOnCooldownCompleteCallback(const Callable& callback);
+  void RemoveOnCooldownCompleteCallback(const StringName& callbackName);
+  void ClearOnCooldownCompleteCallbacks();
+
  protected:
   static void _bind_methods();
+
+ protected:
+  Vector<Callable> m_onExecuteCallbacks;
+  Vector<Callable> m_onCooldownCompleteCallbacks;
+
+  bool m_isOnCooldown = false;
 };
 
 class PassiveSkillNode : public SkillNode

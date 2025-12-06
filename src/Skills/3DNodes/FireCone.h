@@ -25,9 +25,12 @@ class FireCone : public Node3D
 
   bool IsActive() const { return m_isActive; }
 
- protected:
-  static void _bind_methods();
+  
+  protected:
+  friend class SkillFireCone;
 
+  static void _bind_methods();
+  
   void OnTimerTimeout();
 
  private:

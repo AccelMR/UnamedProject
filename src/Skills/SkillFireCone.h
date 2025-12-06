@@ -4,6 +4,7 @@
 
 #include <godot_cpp/classes/particle_process_material.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
+#include <godot_cpp/classes/timer.hpp>
 
 using namespace godot;
 
@@ -79,10 +80,13 @@ class SkillFireCone : public ActiveSkillNode
   
   void Init(Node* owner) override;
 
+  void OnFireConeCooldownComplete();
+
  private:
   Node* m_owner = nullptr;
   FireCone* m_fireConeNode = nullptr;
   Ref<FireConeResource> m_skillResource;
   FireConeData m_fireConeData;
+  Timer* m_cooldownTimer = nullptr;
 };
 

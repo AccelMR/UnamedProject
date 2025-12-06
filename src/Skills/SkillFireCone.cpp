@@ -80,6 +80,8 @@ void SkillFireCone::_bind_methods()
   ClassDB::bind_method(D_METHOD("SetSkillResource", "resource"), &SkillFireCone::SetSkillResource);
   ClassDB::bind_method(D_METHOD("GetSkillResource"), &SkillFireCone::GetSkillResource);
 
+  ClassDB::bind_method(D_METHOD("OnFireConeCooldownComplete"), &SkillFireCone::OnFireConeCooldownComplete);
+
   ADD_PROPERTY(
       PropertyInfo(Variant::OBJECT, "SkillResource", PROPERTY_HINT_RESOURCE_TYPE, "FireConeResource"),
       "SetSkillResource", "GetSkillResource");
@@ -121,11 +123,22 @@ void SkillFireCone::Init(Node *owner)
     UtilityFunctions::print("  Cone Length: " + String::num(m_fireConeData.coneLength));
     UtilityFunctions::print("  Fire Damage: " + String::num(m_fireConeData.fireDamage));
     UtilityFunctions::print("  Duration: " + String::num(m_fireConeData.duration));
+    UtilityFunctions::print("  Cooldown Time: " + String::num(m_skillResource->GetCooldownTime()));
+
+    // Setup cooldown timer
+    m_cooldownTimer = memnew(Timer);
+    m_cooldownTimer->set_wait_time(m_skillResource->GetCooldownTime());
+    m_cooldownTimer->set_one_shot(true);
+    m_cooldownTimer->connect("timeout", Callable(this, "OnFireConeCooldownComplete"));
+    call_deferred("add_child", m_cooldownTimer);
   }
 }
 
 void SkillFireCone::Execute()
 {
+  // This calls the callbacks registered with AddOnExecuteCallback
+  SkillNode::Execute();
+  
   if (!m_fireConeNode)
   {
     UtilityFunctions::push_warning("SkillFireCone::Execute: FireCone node is null.");
@@ -138,5 +151,32 @@ void SkillFireCone::Execute()
     return;
   }
 
+  if (m_isOnCooldown)
+  {
+    UtilityFunctions::push_warning("SkillFireCone::Execute: Skill is on cooldown, ignoring.");
+    return;
+  }
+
+  if (m_cooldownTimer)
+  {
+    m_cooldownTimer->start();
+  }
+
+  m_isOnCooldown = true;
   m_fireConeNode->ActivateFor(m_fireConeData.duration);
+}
+
+void SkillFireCone::OnFireConeCooldownComplete()
+{
+  m_isOnCooldown = false;
+  
+  // This calls the callbacks registered with AddOnCooldownCompleteCallback
+  for (const Callable& callback : m_onCooldownCompleteCallbacks)
+  {
+    if (callback.is_valid())
+    {
+      callback.call();
+      UtilityFunctions::print("SkillFireCone::OnFireConeCooldownComplete: Called cooldown complete callback.");
+    }
+  }
 }
