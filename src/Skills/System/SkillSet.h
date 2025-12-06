@@ -27,7 +27,7 @@ class SkillSet : public Resource
 
  private:
   TypedArray<SkillResource> m_skills;
-  TypedArray<SkillNode> m_skillNodes;
+  Vector<SkillNode*> m_skillNodes;
 
   bool m_areSkillNodesInstantiated = false;
 };

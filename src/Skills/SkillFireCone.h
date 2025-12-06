@@ -48,7 +48,7 @@ class FireConeResource : public SkillResource
   Ref<ParticleProcessMaterial> GetVfxMaterial() const { return m_data.vfxMaterial; }
   void SetVfxMaterial(const Ref<ParticleProcessMaterial>& material) { m_data.vfxMaterial = material; }
 
-  SkillNode* CreateSkillNodeForThisResource(const Node* owner) override;
+  SkillNode* CreateSkillNodeForThisResource(Node* owner) override;
 
  protected:
   static void _bind_methods();
@@ -62,21 +62,22 @@ class SkillFireCone : public SkillNode
   GDCLASS(SkillFireCone, SkillNode);
 
  public:
+
   SkillFireCone() = default;
   ~SkillFireCone() override = default;
 
-  void init(Node* owner) override;
-  void execute() override;
-  Node* getOwner() const override { return m_owner; }
-
-  Ref<SkillResource> getSkillResource() const override { return m_skillResource; }
-  void setSkillResource(const Ref<FireConeResource>& resource) { m_skillResource = resource; }
-
-  // Debug:
-  void drawDebugCone();
-
+  void Execute() override;
+  Node* GetOwner() const override { return m_owner; }
+  
+  Ref<SkillResource> GetSkillResource() const override { return m_skillResource; }
+  void SetSkillResource(const Ref<FireConeResource>& resource) { m_skillResource = resource; }
+  
  protected:
+  friend class FireConeResource;
+
   static void _bind_methods();
+  
+  void Init(Node* owner) override;
 
  private:
   Node* m_owner = nullptr;

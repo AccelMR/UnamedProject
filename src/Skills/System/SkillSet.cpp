@@ -44,7 +44,7 @@ void SkillSet::InstantiateSkills(Node* owner)
       SkillNode* skillNode = skillRes->CreateSkillNodeForThisResource(owner);
       if (skillNode)
       {
-        m_skillNodes.append(skillNode);
+        m_skillNodes.push_back(skillNode);
         owner->call_deferred("add_child", skillNode);
       }
     }

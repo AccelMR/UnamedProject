@@ -25,6 +25,6 @@ void SkillResource::_bind_methods()
 
 SkillNode::SkillNode() {}
 
-void SkillNode::init(Node *owner) {}
+void SkillNode::Init(Node *owner) {}
 
-void SkillNode::execute() {}
+void SkillNode::Execute() {}

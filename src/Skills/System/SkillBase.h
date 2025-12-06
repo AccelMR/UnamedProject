@@ -13,7 +13,7 @@ class SkillResource : public Resource
   GDCLASS(SkillResource, Resource);
 
  public:
-  virtual SkillNode* CreateSkillNodeForThisResource(const Node*) { return nullptr; }
+  virtual SkillNode* CreateSkillNodeForThisResource(Node*) { return nullptr; }
 
   void SetName(const String& name) { m_name = name; }
   String GetName() const { return m_name; }
@@ -39,10 +39,10 @@ class ISkillBase
   ISkillBase() = default;
   virtual ~ISkillBase() = default;
 
-  virtual void init(Node* owner) = 0;
-  virtual void execute() = 0;
-  virtual Node* getOwner() const = 0;
-  virtual Ref<SkillResource> getSkillResource() const = 0;
+  virtual void Init(Node* owner) = 0;
+  virtual void Execute() = 0;
+  virtual Node* GetOwner() const = 0;
+  virtual Ref<SkillResource> GetSkillResource() const = 0;
 };
 
 class SkillNode : public Node, public ISkillBase
@@ -52,10 +52,10 @@ class SkillNode : public Node, public ISkillBase
   SkillNode();
   virtual ~SkillNode() = default;
 
-  void init(Node* owner) override;
-  void execute() override;
-  Node* getOwner() const override { return nullptr; }
-  Ref<SkillResource> getSkillResource() const override { return nullptr; }
+  void Init(Node* owner) override;
+  void Execute() override;
+  Node* GetOwner() const override { return nullptr; }
+  Ref<SkillResource> GetSkillResource() const override { return nullptr; }
 
  protected:
   static void _bind_methods();

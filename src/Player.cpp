@@ -150,7 +150,7 @@ void Player::_physics_process(double delta)
   {
     if (m_skillFireCone)
     {
-      m_skillFireCone->execute();
+      m_skillFireCone->Execute();
     }
   }
   

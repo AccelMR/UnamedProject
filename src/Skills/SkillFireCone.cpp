@@ -77,24 +77,24 @@ void FireConeResource::_bind_methods()
 
 void SkillFireCone::_bind_methods()
 {
-  ClassDB::bind_method(D_METHOD("setSkillResource", "resource"), &SkillFireCone::setSkillResource);
-  ClassDB::bind_method(D_METHOD("getSkillResource"), &SkillFireCone::getSkillResource);
+  ClassDB::bind_method(D_METHOD("SetSkillResource", "resource"), &SkillFireCone::SetSkillResource);
+  ClassDB::bind_method(D_METHOD("GetSkillResource"), &SkillFireCone::GetSkillResource);
 
   ADD_PROPERTY(
       PropertyInfo(Variant::OBJECT, "SkillResource", PROPERTY_HINT_RESOURCE_TYPE, "FireConeResource"),
-      "setSkillResource", "getSkillResource");
+      "SetSkillResource", "GetSkillResource");
 }
 
-SkillNode* FireConeResource::CreateSkillNodeForThisResource(const Node*)
+SkillNode* FireConeResource::CreateSkillNodeForThisResource(Node* owner)
 {
   UtilityFunctions::print("FireConeResource::CreateSkillNodeForThisResource called");
   SkillFireCone* skillNode = memnew(SkillFireCone);
-  return nullptr;
-  // skillNode->setSkillResource(Ref<FireConeResource>(this));
-  // return skillNode;
+  skillNode->SetSkillResource(Ref<FireConeResource>(this));
+  skillNode->Init(owner);
+  return Object::cast_to<SkillNode>(skillNode);
 }
 
-void SkillFireCone::init(Node *owner)
+void SkillFireCone::Init(Node *owner)
 {
   m_owner = owner;
   if (m_skillResource.is_valid())
@@ -103,7 +103,7 @@ void SkillFireCone::init(Node *owner)
   }
   else
   {
-    UtilityFunctions::push_warning("SkillFireCone::init: SkillResource is not valid.");
+    UtilityFunctions::push_warning("SkillFireCone::Init: SkillResource is not valid.");
   }
 
   // Create the FireCone node
@@ -116,7 +116,7 @@ void SkillFireCone::init(Node *owner)
 
     m_fireConeNode->SetupCone(m_fireConeData);
 
-    UtilityFunctions::print("SkillFireCone::init: FireCone node created and added to owner.");
+    UtilityFunctions::print("SkillFireCone::Init: FireCone node created and added to owner.");
     UtilityFunctions::print("  Cone Angle: " + String::num(m_fireConeData.coneAngle));
     UtilityFunctions::print("  Cone Length: " + String::num(m_fireConeData.coneLength));
     UtilityFunctions::print("  Fire Damage: " + String::num(m_fireConeData.fireDamage));
@@ -124,17 +124,17 @@ void SkillFireCone::init(Node *owner)
   }
 }
 
-void SkillFireCone::execute()
+void SkillFireCone::Execute()
 {
   if (!m_fireConeNode)
   {
-    UtilityFunctions::push_warning("SkillFireCone::execute: FireCone node is null.");
+    UtilityFunctions::push_warning("SkillFireCone::Execute: FireCone node is null.");
     return;
   }
 
   if (m_fireConeNode->IsActive())
   {
-    UtilityFunctions::push_warning("SkillFireCone::execute: FireCone already active, ignoring.");
+    UtilityFunctions::push_warning("SkillFireCone::Execute: FireCone already active, ignoring.");
     return;
   }
 

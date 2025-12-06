@@ -38,6 +38,7 @@ void PlayerUI::PopulateSkillList(const SkillSet* skillSet)
   }
 
   m_skillList->clear();
+  skillSet->ForEachSkillNode(Callable(this, "CreateSkillButton"));
 }
 
 void PlayerUI::CreateSkillButton(const SkillNode* skillNode)
@@ -47,7 +48,7 @@ void PlayerUI::CreateSkillButton(const SkillNode* skillNode)
     UtilityFunctions::push_warning("PlayerUI: Invalid SkillNode!");
     return;
   }
-  Ref<SkillResource> skillResource = skillNode->getSkillResource();
+  Ref<SkillResource> skillResource = skillNode->GetSkillResource();
   if (!skillResource.is_valid())
   {
     UtilityFunctions::push_warning("PlayerUI: SkillNode has invalid SkillResource!");
@@ -56,7 +57,7 @@ void PlayerUI::CreateSkillButton(const SkillNode* skillNode)
   
   String skillName = skillResource->GetName();
   Ref<Texture2D> skillIcon = skillResource->GetIcon();
-  if (skillIcon.is_valid())
+  if (!skillIcon.is_valid())
   {
     m_skillList->add_item(skillName, skillIcon);
     UtilityFunctions::print("PlayerUI: Added skill button for " + skillName);

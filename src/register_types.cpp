@@ -32,8 +32,8 @@ void initialize_example_module(ModuleInitializationLevel p_level)
 
   GDREGISTER_CLASS(SkillResource);
   GDREGISTER_CLASS(FireConeResource);
-  GDREGISTER_CLASS(SkillSet);
 
+  
   GDREGISTER_RUNTIME_CLASS(Agent);
   GDREGISTER_RUNTIME_CLASS(CameraController);
   GDREGISTER_RUNTIME_CLASS(Enemy);
@@ -44,8 +44,11 @@ void initialize_example_module(ModuleInitializationLevel p_level)
   
   GDREGISTER_RUNTIME_CLASS(SkillNode);
   GDREGISTER_RUNTIME_CLASS(SkillFireCone);
-
+  
   GDREGISTER_RUNTIME_CLASS(PlayerUI);
+
+  
+  GDREGISTER_CLASS(SkillSet);
 }
 
 void uninitialize_example_module(ModuleInitializationLevel p_level)
