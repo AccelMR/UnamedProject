@@ -156,14 +156,15 @@ void Player::_physics_process(double delta)
     }
   }
 
-  if (Input::get_singleton()->is_action_just_pressed("skill_1"))
+  for (int index = 1; index < m_maxSkillSlots; index++)
   {
-    Variant executorVar = m_skillExecutors["skill_1"];
+    Variant executorVar = m_skillExecutors["skill_" + String::num_int64(index)];
     ActiveSkillNode* executor = Object::cast_to<ActiveSkillNode>(executorVar);
     if (executor)
     {
       executor->Execute();
     }
+    index++;
   }
   
   MoveToTarget(delta);

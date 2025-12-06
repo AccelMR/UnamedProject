@@ -58,6 +58,7 @@ class Player : public CharacterBody3D
   InputManager* m_inputManager;
   PlayerUI* m_playerUI;
 
+  int m_maxSkillSlots = 4;
   float m_speed = 5.0f;
 
   bool m_bHasTarget = false;
