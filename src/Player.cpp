@@ -90,6 +90,16 @@ void Player::_ready()
 
   m_skillSet->InstantiateSkills(this);
 
+  // Bind Active Skills to input
+  int index = 1;
+  Vector<ActiveSkillNode*> activeSkills = m_skillSet->GetActiveSkills();
+  for (ActiveSkillNode* activeSkill : activeSkills)
+  {
+    String actionName = "skill_" + String::num_int64(index);
+    m_skillExecutors[actionName] = activeSkill;
+    index++;
+  }
+
   // Connect UI
   m_playerUI = get_node<PlayerUI>("PlayerUI");
   if (m_playerUI)
@@ -148,9 +158,11 @@ void Player::_physics_process(double delta)
 
   if (Input::get_singleton()->is_action_just_pressed("skill_1"))
   {
-    if (m_skillFireCone)
+    Variant executorVar = m_skillExecutors["skill_1"];
+    ActiveSkillNode* executor = Object::cast_to<ActiveSkillNode>(executorVar);
+    if (executor)
     {
-      m_skillFireCone->Execute();
+      executor->Execute();
     }
   }
   

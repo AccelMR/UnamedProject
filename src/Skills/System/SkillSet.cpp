@@ -76,3 +76,25 @@ void SkillSet::ForEachSkillNode(const Callable& callback) const
     }
   }
 }
+
+Vector<ActiveSkillNode*> SkillSet::GetActiveSkills() const
+{
+  Vector<ActiveSkillNode*> activeSkills;
+
+  if (!m_areSkillNodesInstantiated)
+  {
+    UtilityFunctions::push_warning("SkillSet::GetActiveSkills: Skills not instantiated!");
+    return activeSkills;
+  }
+
+  for (int32_t i = 0; i < m_skillNodes.size(); ++i)
+  {
+    ActiveSkillNode* activeSkill = Object::cast_to<ActiveSkillNode>(m_skillNodes[i]);
+    if (activeSkill)
+    {
+      activeSkills.push_back(activeSkill);
+    }
+  }
+
+  return activeSkills;
+}

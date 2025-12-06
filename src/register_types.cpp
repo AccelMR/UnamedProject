@@ -43,11 +43,13 @@ void initialize_example_module(ModuleInitializationLevel p_level)
   GDREGISTER_RUNTIME_CLASS(Player);
   
   GDREGISTER_RUNTIME_CLASS(SkillNode);
+  GDREGISTER_RUNTIME_CLASS(PassiveSkillNode);
+  GDREGISTER_RUNTIME_CLASS(ActiveSkillNode);
+
   GDREGISTER_RUNTIME_CLASS(SkillFireCone);
   
   GDREGISTER_RUNTIME_CLASS(PlayerUI);
 
-  
   GDREGISTER_CLASS(SkillSet);
 }
 

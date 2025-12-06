@@ -61,3 +61,25 @@ class SkillNode : public Node, public ISkillBase
   static void _bind_methods();
 };
 
+class PassiveSkillNode : public SkillNode
+{
+  GDCLASS(PassiveSkillNode, SkillNode);
+ public:
+  PassiveSkillNode() = default;
+  virtual ~PassiveSkillNode() = default;
+
+ protected:
+  static void _bind_methods();
+};
+
+class ActiveSkillNode : public SkillNode
+{
+  GDCLASS(ActiveSkillNode, SkillNode);
+ public:
+  ActiveSkillNode() = default;
+  virtual ~ActiveSkillNode() = default;
+
+ protected:
+  static void _bind_methods();
+};
+

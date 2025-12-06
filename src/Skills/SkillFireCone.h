@@ -57,9 +57,9 @@ class FireConeResource : public SkillResource
   FireConeData m_data;
 };
 
-class SkillFireCone : public SkillNode
+class SkillFireCone : public ActiveSkillNode
 {
-  GDCLASS(SkillFireCone, SkillNode);
+  GDCLASS(SkillFireCone, ActiveSkillNode);
 
  public:
 

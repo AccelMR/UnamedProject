@@ -23,8 +23,13 @@ void SkillResource::_bind_methods()
   ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "icon", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "SetIcon", "GetIcon");
 }
 
+void PassiveSkillNode::_bind_methods() {}
+
+void ActiveSkillNode::_bind_methods() {}
+
 SkillNode::SkillNode() {}
 
 void SkillNode::Init(Node *owner) {}
 
 void SkillNode::Execute() {}
+

@@ -8,6 +8,7 @@
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
 
 using namespace godot;
 
@@ -57,8 +58,6 @@ class Player : public CharacterBody3D
   InputManager* m_inputManager;
   PlayerUI* m_playerUI;
 
-  SkillFireCone* m_skillFireCone = nullptr;
-
   float m_speed = 5.0f;
 
   bool m_bHasTarget = false;
@@ -67,6 +66,8 @@ class Player : public CharacterBody3D
   Vector3 m_forwardDirection;
 
   MouseMarker* m_targetMarker = nullptr;
+
+  Dictionary m_skillExecutors;
 
   // Editor exposed variables
   String m_markerScenePath = "res://Scenes/Marker.tscn";
