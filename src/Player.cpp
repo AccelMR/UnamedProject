@@ -61,7 +61,7 @@ ADD_PROPERTY(PropertyInfo(Variant::OBJECT,
 void Player::Attack()
 {
   m_attackCooldownTimer = m_attackCooldown;
-  m_currentWeapon->Attack();
+  m_currentWeapon->Attack(m_forwardDirection);
 }
 
 void Player::_ready()

@@ -5,6 +5,7 @@ void Projectile::_ready()
   // Initialization code here
   m_collider = get_node<CollisionShape3D>("Collider");
   m_mesh = get_node<MeshInstance3D>("Mesh");
+  set_gravity_scale(0.0f);
 }
 
 void Projectile::_physics_process(double delta)

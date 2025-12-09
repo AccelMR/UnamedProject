@@ -333,7 +333,7 @@ albedo_color = Color(0.34117648, 0.38431373, 0.011764706, 1)
 
 [node name="Player" type="Player" parent="." unique_id=1017950454]
 markerScenePath = "res://Prefabs/MouseMarker.tscn"
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4319968, 6.7017956, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4253883, 2.0828621, 0.00082325935)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=737331114]
 shape = SubResource("CapsuleShape3D_ix3kg")
@@ -403,10 +403,11 @@ libraries/Run = ExtResource("3_6gqg1")
 
 [node name="Weapon" type="Weapon" parent="Player" unique_id=620774817]
 weaponType = 2
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08076882, 0, -0.9814857)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)
 gravity_scale = 0.0
 
 [node name="ProjectileSpawnPoint" type="Node3D" parent="Player/Weapon" unique_id=1006655412]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.053972065)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Weapon" unique_id=645431598]
 mesh = SubResource("PlaceholderMesh_fpva8")
@@ -432,7 +433,7 @@ visible = false
 shape = SubResource("BoxShape3D_bprmo")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=702406762]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0051357555, 0.008501816, 2.3040771e-05)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0052018403, 0.008501813, 3.1273365e-05)
 mesh = SubResource("PlaneMesh_ix3kg")
 surface_material_override/0 = SubResource("StandardMaterial3D_ix3kg")
 

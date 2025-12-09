@@ -6,7 +6,10 @@
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/core/class_db.hpp>
 
+#include <vector>
+
 using namespace godot;
+using std::vector;
 
 enum WeaponType
 {
@@ -15,6 +18,8 @@ enum WeaponType
   WEAPON_TYPE_RANGE = 2,
   WEAPON_TYPE_TOTAL = 3
 };
+
+class Projectile;
 
 class Weapon : public RigidBody3D
 {
@@ -36,6 +41,7 @@ protected:
   Node3D* m_projectileSpawnPoint = nullptr;
   RigidBody3D* m_projectileBody = nullptr;
   MeshInstance3D* m_projectileMesh = nullptr;
+  vector<Projectile*> m_activeProjectiles;
 
 public:
   Weapon() = default;
@@ -44,7 +50,7 @@ public:
   void _ready() override;
   void _physics_process(double delta) override;
 
-  virtual void Attack();
+  virtual void Attack(Vector3 direction);
 
   //Setters and Getters
   void SetBaseDamage(float _newDamage) { m_baseDamage = _newDamage; }
