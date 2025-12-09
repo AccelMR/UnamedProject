@@ -13,7 +13,7 @@ class SkillResource : public Resource
   GDCLASS(SkillResource, Resource);
 
  public:
-  virtual SkillNode* CreateSkillNodeForThisResource(const Node*) { return nullptr; }
+  virtual SkillNode* CreateSkillNodeForThisResource(Node*) { return nullptr; }
 
   void SetName(const String& name) { m_name = name; }
   String GetName() const { return m_name; }
@@ -24,6 +24,9 @@ class SkillResource : public Resource
   void SetIcon(const Ref<Texture2D>& icon) { m_icon = icon; }
   Ref<Texture2D> GetIcon() const { return m_icon; }
 
+  void SetCooldownTime(float cooldownTime) { m_cooldownTime = cooldownTime; }
+  float GetCooldownTime() const { return m_cooldownTime; }
+
  protected:
   static void _bind_methods();
 
@@ -31,6 +34,7 @@ class SkillResource : public Resource
   String m_name;
   String m_description;
   Ref<Texture2D> m_icon;
+  float m_cooldownTime = 0.1f;
 };
 
 class ISkillBase
@@ -39,10 +43,10 @@ class ISkillBase
   ISkillBase() = default;
   virtual ~ISkillBase() = default;
 
-  virtual void init(Node* owner) = 0;
-  virtual void execute() = 0;
-  virtual Node* getOwner() const = 0;
-  virtual Ref<SkillResource> getSkillResource() const = 0;
+  virtual void Init(Node* owner) = 0;
+  virtual void Execute() = 0;
+  virtual Node* GetOwner() const = 0;
+  virtual Ref<SkillResource> GetSkillResource() const = 0;
 };
 
 class SkillNode : public Node, public ISkillBase
@@ -52,10 +56,48 @@ class SkillNode : public Node, public ISkillBase
   SkillNode();
   virtual ~SkillNode() = default;
 
-  void init(Node* owner) override;
-  void execute() override;
-  Node* getOwner() const override { return nullptr; }
-  Ref<SkillResource> getSkillResource() const override { return nullptr; }
+  void Init(Node* owner) override;
+  void Execute() override;
+  Node* GetOwner() const override { return nullptr; }
+  Ref<SkillResource> GetSkillResource() const override { return nullptr; }
+
+  bool IsOnCooldown() const { return m_isOnCooldown; }
+
+  void AddOnExecuteCallback(const Callable& callback);
+  void RemoveOnExecuteCallback(const StringName& callbackName);
+  void ClearOnExecuteCallbacks();
+
+  void AddOnCooldownCompleteCallback(const Callable& callback);
+  void RemoveOnCooldownCompleteCallback(const StringName& callbackName);
+  void ClearOnCooldownCompleteCallbacks();
+
+ protected:
+  static void _bind_methods();
+
+ protected:
+  Vector<Callable> m_onExecuteCallbacks;
+  Vector<Callable> m_onCooldownCompleteCallbacks;
+
+  bool m_isOnCooldown = false;
+};
+
+class PassiveSkillNode : public SkillNode
+{
+  GDCLASS(PassiveSkillNode, SkillNode);
+ public:
+  PassiveSkillNode() = default;
+  virtual ~PassiveSkillNode() = default;
+
+ protected:
+  static void _bind_methods();
+};
+
+class ActiveSkillNode : public SkillNode
+{
+  GDCLASS(ActiveSkillNode, SkillNode);
+ public:
+  ActiveSkillNode() = default;
+  virtual ~ActiveSkillNode() = default;
 
  protected:
   static void _bind_methods();

@@ -24,37 +24,41 @@ using namespace godot;
 
 void Player::_bind_methods()
 {
-  ClassDB::bind_method(D_METHOD("getMarkerScenePath"), &Player::getMarkerScenePath);
-  ClassDB::bind_method(D_METHOD("setMarkerScenePath", "path"), &Player::setMarkerScenePath);
+  ClassDB::bind_method(D_METHOD("GetMarkerScenePath"), &Player::GetMarkerScenePath);
+  ClassDB::bind_method(D_METHOD("SetMarkerScenePath", "path"), &Player::SetMarkerScenePath);
 
-  ClassDB::bind_method(D_METHOD("setMoveButton", "button"), &Player::setMoveButton);
-  ClassDB::bind_method(D_METHOD("getMoveButton"), &Player::getMoveButton);
+  ClassDB::bind_method(D_METHOD("SetMoveButton", "button"), &Player::SetMoveButton);
+  ClassDB::bind_method(D_METHOD("GetMoveButton"), &Player::GetMoveButton);
 
-  ClassDB::bind_method(D_METHOD("getAttackCooldown"), &Player::GetAttackCooldown);
-  ClassDB::bind_method(D_METHOD("setAttackCooldown", "_newCooldown"), &Player::SetAttackCooldown);
+  ClassDB::bind_method(D_METHOD("GetAttackCooldown"), &Player::GetAttackCooldown);
+  ClassDB::bind_method(D_METHOD("SetAttackCooldown", "_newCooldown"), &Player::SetAttackCooldown);
 
   ClassDB::bind_method(D_METHOD("GetSkillSet"), &Player::GetSkillSet);
   ClassDB::bind_method(D_METHOD("SetSkillSet", "skillSet"), &Player::SetSkillSet);
 
   ADD_PROPERTY(PropertyInfo(Variant::STRING, "markerScenePath"), 
-               "setMarkerScenePath", "getMarkerScenePath");
+               "SetMarkerScenePath", "GetMarkerScenePath");
+
   ADD_PROPERTY(PropertyInfo(Variant::INT, 
                "moveButton", 
                PROPERTY_HINT_ENUM, 
                "Left:1,Right:2,Middle:3"), 
-               "setMoveButton", 
-               "getMoveButton");
+               "SetMoveButton", 
+               "GetMoveButton");
+
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT,
                "attackCooldown",
                PROPERTY_HINT_RANGE,
                "0.0f,10.0,0.1"),
-               "setAttackCooldown",
-               "getAttackCooldown");
-ADD_PROPERTY(PropertyInfo(Variant::OBJECT, 
-                            "skillSet",
-                            PROPERTY_HINT_RESOURCE_TYPE, 
-                            "SkillSet"), 
-               "SetSkillSet", "GetSkillSet");
+               "SetAttackCooldown",
+               "GetAttackCooldown");
+
+  ADD_PROPERTY(PropertyInfo(Variant::OBJECT, 
+               "skillSet",
+               PROPERTY_HINT_RESOURCE_TYPE, 
+               "SkillSet"), 
+               "SetSkillSet",
+               "GetSkillSet");
 
 }
 
@@ -104,6 +108,16 @@ void Player::_ready()
 
   m_skillSet->InstantiateSkills(this);
 
+  // Bind Active Skills to input
+  int index = 1;
+  Vector<ActiveSkillNode*> activeSkills = m_skillSet->GetActiveSkills();
+  for (ActiveSkillNode* activeSkill : activeSkills)
+  {
+    String actionName = "skill_" + String::num_int64(index);
+    m_skillExecutors[actionName] = activeSkill;
+    index++;
+  }
+
   // Connect UI
   m_playerUI = get_node<PlayerUI>("PlayerUI");
   if (m_playerUI)
@@ -123,12 +137,12 @@ void Player::_unhandled_input(const Ref<InputEvent>& event)
       return;
   }
 
-  const InputManager::InputMode currentInputMode = m_inputManager->getInputMode();
+  const InputManager::InputMode currentInputMode = m_inputManager->GetInputMode();
   if (currentInputMode == InputManager::InputMode::INPUT_MODE_KVM)
   {
     if (event->is_action_pressed("attack"))
     {
-      setTargetPosition(get_position());
+      SetTargetPosition(get_position());
       LookAtTheMouse();
       if(m_attackCooldownTimer <= 0)
       {
@@ -150,7 +164,7 @@ void Player::_unhandled_input(const Ref<InputEvent>& event)
     {
       UtilityFunctions::print("Move pressed.");
       m_bIsMovementButtonPressed = true;
-      setTargetPosition(tryRayCastToGround(get_viewport()->get_mouse_position()), true);
+      SetTargetPosition(TryRayCastToGround(get_viewport()->get_mouse_position()), true);
     } 
     else if (event->is_action_released("moveClick")) 
     {
@@ -179,9 +193,9 @@ void Player::_physics_process(double delta)
 {
   if (m_bIsMovementButtonPressed)
   {
-    setTargetPosition(tryRayCastToGround(get_viewport()->get_mouse_position()));
+    SetTargetPosition(TryRayCastToGround(get_viewport()->get_mouse_position()));
   }
-  if (m_inputManager->getInputMode() == InputManager::InputMode::INPUT_MODE_GAMEPAD)
+  if (m_inputManager->GetInputMode() == InputManager::InputMode::INPUT_MODE_GAMEPAD)
   {
     Vector2 axisInput = Input::get_singleton()->get_vector("moveLeft", 
                                                            "moveRight", 
@@ -193,22 +207,28 @@ void Player::_physics_process(double delta)
       m_forwardDirection += moveDirection.normalized();
       m_forwardDirection = m_forwardDirection.normalized();
       
-      setTargetPosition(get_global_position() + m_forwardDirection, true);
+      SetTargetPosition(get_global_position() + m_forwardDirection, true);
     }
   }
 
-  if (Input::get_singleton()->is_action_just_pressed("skill_1"))
+  for (int index = 1; index < m_maxSkillSlots; index++)
   {
-    if (m_skillFireCone)
+    String actionName = "skill_" + String::num_int64(index);
+    if (Input::get_singleton()->is_action_just_pressed(actionName))
     {
-      m_skillFireCone->execute();
+      Variant executorVar = m_skillExecutors[actionName];
+      ActiveSkillNode* executor = Object::cast_to<ActiveSkillNode>(executorVar);
+      if (executor)
+      {
+        executor->Execute();
+      }
     }
   }
   
-  moveToTarget(delta);
+  MoveToTarget(delta);
 }
 
-Vector3 Player::tryRayCastToGround(const Vector2& mousePosition)
+Vector3 Player::TryRayCastToGround(const Vector2& mousePosition)
 {
   Vector3 from = m_camera->project_ray_origin(mousePosition);
   Vector3 to = from + m_camera->project_ray_normal(mousePosition) * m_distanceToGroundRaycast;
@@ -227,17 +247,17 @@ Vector3 Player::tryRayCastToGround(const Vector2& mousePosition)
   return this->get_position();
 }
 
-void Player::setTargetPosition(const Vector3& position, bool bShowMarker /*= false*/)
+void Player::SetTargetPosition(const Vector3& position, bool bShowMarker /*= false*/)
 {
   m_targetPosition = position;
   m_bHasTarget = true;
   if (m_targetMarker && bShowMarker)
   {
-    m_targetMarker->updateMarkerPosition(position);
+    m_targetMarker->UpdateMarkerPosition(position);
   }
 }
 
-void Player::moveToTarget(double delta)
+void Player::MoveToTarget(double delta)
 {
   Vector3 velocity = get_velocity();
   Vector3 globalPosition = get_global_position();
@@ -295,7 +315,7 @@ void Player::moveToTarget(double delta)
 
 void Player::LookAtTheMouse()
 {
-  Vector3 mousePos = tryRayCastToGround(get_viewport()->get_mouse_position());
+  Vector3 mousePos = TryRayCastToGround(get_viewport()->get_mouse_position());
   Vector3 globalPos = get_global_position();
   mousePos.y = globalPos.y;
   Vector3 direction = (mousePos - globalPos).normalized();

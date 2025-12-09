@@ -5,6 +5,7 @@
 
 using namespace godot;
 
+class ActiveSkillNode;
 class SkillResource;
 class SkillNode;
 
@@ -22,12 +23,14 @@ class SkillSet : public Resource
 
   void ForEachSkillNode(const Callable& callback) const;
 
+  Vector<ActiveSkillNode*> GetActiveSkills() const;
+
  protected:
   static void _bind_methods();
 
  private:
   TypedArray<SkillResource> m_skills;
-  TypedArray<SkillNode> m_skillNodes;
+  Vector<SkillNode*> m_skillNodes;
 
   bool m_areSkillNodesInstantiated = false;
 };

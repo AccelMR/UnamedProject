@@ -8,6 +8,7 @@
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
 
 using namespace godot;
 
@@ -34,38 +35,37 @@ class Player : public CharacterBody3D
   void _process(double p_delta) override;
   void _physics_process(double delta) override;
 
-  String getMarkerScenePath() const { return m_markerScenePath; }
-  void setMarkerScenePath(const String& path) { m_markerScenePath = path; }
+  String GetMarkerScenePath() const { return m_markerScenePath; }
+  void SetMarkerScenePath(const String& path) { m_markerScenePath = path; }
 
-  void setMoveButton(MouseButton button) { m_moveButton = button; }
-  MouseButton getMoveButton() const { return m_moveButton; }
+  void SetMoveButton(MouseButton button) { m_moveButton = button; }
+  MouseButton GetMoveButton() const { return m_moveButton; }
+
   Ref<SkillSet> GetSkillSet() const { return m_skillSet; }
   void SetSkillSet(const Ref<SkillSet>& skillSet) { m_skillSet = skillSet; }
 
   void SetAttackCooldown(float _newCooldown) { m_attackCooldown = _newCooldown; }
-  float GetAttackCooldown() const { return m_attackCooldown; }
-
- protected:
+  float GetAttackCooldown() const { return m_attackCooldown; } protected:
   static void _bind_methods();
 
   void Attack();
 
  private:
-  Vector3 tryRayCastToGround(const Vector2& mousePosition);
-  void setTargetPosition(const Vector3& position, bool bShowMarker = false);
+  Vector3 TryRayCastToGround(const Vector2& mousePosition);
+  void SetTargetPosition(const Vector3& position, bool bShowMarker = false);
   
-  void moveToTarget(double delta);
-
-    void LookAtTheMouse();
+  void MoveToTarget(double delta);
+  void LookAtTheMouse();
  private:
   CollisionShape3D* m_collider;
   Camera3D* m_camera;
   AnimationPlayer* m_animationPlayer;
   InputManager* m_inputManager;
   PlayerUI* m_playerUI;
-  SkillFireCone* m_skillFireCone = nullptr;
-  Weapon* m_currentWeapon;
 
+  SkillFireCone* m_skillFireCone = nullptr;
+int m_maxSkillSlots = 4;
+  Weapon* m_currentWeapon;
   float m_speed = 5.0f;
   float m_attackCooldownTimer = m_attackCooldown;
 
@@ -76,6 +76,8 @@ class Player : public CharacterBody3D
   Vector3 m_forwardDirection;
 
   MouseMarker* m_targetMarker = nullptr;
+
+  Dictionary m_skillExecutors;
 
   // Editor exposed variables
   String m_markerScenePath = "res://Scenes/Marker.tscn";

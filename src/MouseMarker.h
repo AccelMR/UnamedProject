@@ -16,10 +16,10 @@ class MouseMarker : public Node3D
   void _ready() override;
   void _process(double delta) override;
 
-  void updateMarkerPosition(const Vector3& position);
+  void UpdateMarkerPosition(const Vector3& position);
 
-  float getMarkShrinkSpeed() const { return m_markShrinkSpeed; }
-  void setMarkShrinkSpeed(float speed) { m_markShrinkSpeed = speed; }
+  float GetMarkShrinkSpeed() const { return m_markShrinkSpeed; }
+  void SetMarkShrinkSpeed(float speed) { m_markShrinkSpeed = speed; }
 
  protected:
   static void _bind_methods();

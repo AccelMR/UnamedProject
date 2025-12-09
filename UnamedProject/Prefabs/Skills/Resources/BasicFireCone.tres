@@ -10,3 +10,4 @@ meshMaterial = ExtResource("1_u5xoo")
 name = "Fire Cone"
 description = "This is a Fire Cone Ability!"
 icon = ExtResource("1_di3ig")
+cooldownTime = 3.0

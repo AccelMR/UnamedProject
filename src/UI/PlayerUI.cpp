@@ -38,32 +38,43 @@ void PlayerUI::PopulateSkillList(const SkillSet* skillSet)
   }
 
   m_skillList->clear();
+  skillSet->ForEachSkillNode(Callable(this, "CreateSkillButton"));
 }
 
-void PlayerUI::CreateSkillButton(const SkillNode* skillNode)
+void PlayerUI::CreateSkillButton(SkillNode* skillNode)
 {
   if (!skillNode)
   {
     UtilityFunctions::push_warning("PlayerUI: Invalid SkillNode!");
     return;
   }
-  Ref<SkillResource> skillResource = skillNode->getSkillResource();
+  Ref<SkillResource> skillResource = skillNode->GetSkillResource();
   if (!skillResource.is_valid())
   {
     UtilityFunctions::push_warning("PlayerUI: SkillNode has invalid SkillResource!");
     return;
   }
   
+  int itemIndex = -1;
+
   String skillName = skillResource->GetName();
   Ref<Texture2D> skillIcon = skillResource->GetIcon();
   if (skillIcon.is_valid())
   {
-    m_skillList->add_item(skillName, skillIcon);
+    itemIndex = m_skillList->add_item(skillName, skillIcon);
     UtilityFunctions::print("PlayerUI: Added skill button for " + skillName);
   }
   else
   {
-    m_skillList->add_item(skillName);
+    itemIndex = m_skillList->add_item(skillName);
     UtilityFunctions::push_warning("PlayerUI: SkillResource has no valid icon!");
+  }
+
+  m_skillItemIndices[skillNode] = itemIndex;
+
+  if (itemIndex != -1)
+  {
+    skillNode->AddOnExecuteCallback(Callable(m_skillList, "set_item_disabled").bind(itemIndex, true));
+    skillNode->AddOnCooldownCompleteCallback(Callable(m_skillList, "set_item_disabled").bind(itemIndex, false));
   }
 }

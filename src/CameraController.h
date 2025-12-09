@@ -18,11 +18,11 @@ public:
   void _ready() override;
   void _physics_process(double delta) override;
 
-  float getSpeed() const { return m_speed; }
-  void setSpeed(float speed) { m_speed = speed; }
+  float GetSpeed() const { return m_speed; }
+  void SetSpeed(float speed) { m_speed = speed; }
 
-  float getZoomSpeed() const { return m_zoomSpeed; }
-  void setZoomSpeed(float zoomSpeed) { m_zoomSpeed = zoomSpeed; }
+  float GetZoomSpeed() const { return m_zoomSpeed; }
+  void SetZoomSpeed(float zoomSpeed) { m_zoomSpeed = zoomSpeed; }
 
 protected:
   static void _bind_methods();

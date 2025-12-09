@@ -25,8 +25,9 @@ class PlayerUI : public Control
   static void _bind_methods();
 
  private:
-  void CreateSkillButton(const SkillNode* skillNode);
+  void CreateSkillButton(SkillNode* skillNode);
 
  private:
   ItemList* m_skillList = nullptr;
+  Dictionary m_skillItemIndices;
 };
