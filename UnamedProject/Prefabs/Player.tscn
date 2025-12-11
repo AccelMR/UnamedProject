@@ -410,4 +410,25 @@ max_columns = 0
 item_0/text = "Test"
 item_0/icon = ExtResource("5_vxq8l")
 
+[node name="Panel" type="Panel" parent="PlayerUI" unique_id=784133653]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="TopBar" type="HBoxContainer" parent="PlayerUI" unique_id=1752856934]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HealthTexture" type="TextureRect" parent="PlayerUI/TopBar" unique_id=1330287246]
+layout_mode = 2
+texture = ExtResource("5_vxq8l")
+
+[node name="HealthLabel" type="Label" parent="PlayerUI/TopBar" unique_id=1964227841]
+layout_mode = 2
+text = "Health / Max Health"
+horizontal_alignment = 2
+
 [editable path="Model"]

@@ -62,7 +62,7 @@ void SkillNode::AddOnExecuteCallback(const Callable &callback)
 
 void SkillNode::RemoveOnExecuteCallback(const StringName &callbackName)
 {
-  for (int i = 0; i < m_onExecuteCallbacks.size(); ++i)
+  for (int32_t i = 0; i < m_onExecuteCallbacks.size(); ++i)
   {
     const Callable &callback = m_onExecuteCallbacks[i];
     if (callback.is_valid() && callback.get_method() == callbackName)
@@ -94,7 +94,7 @@ void SkillNode::AddOnCooldownCompleteCallback(const Callable &callback)
 
 void SkillNode::RemoveOnCooldownCompleteCallback(const StringName &callbackName)
 {
-  for (int i = 0; i < m_onCooldownCompleteCallbacks.size(); ++i)
+  for (int32_t i = 0; i < m_onCooldownCompleteCallbacks.size(); ++i)
   {
     const Callable &callback = m_onCooldownCompleteCallbacks[i];
     if (callback.is_valid() && callback.get_method() == callbackName)

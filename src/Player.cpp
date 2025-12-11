@@ -14,6 +14,7 @@
 #include "InputManager.h"
 #include "MouseMarker.h"
 #include "UI/PlayerUI.h"
+#include "UI/ViewModels/PlayerVM.h"
 
 // Skills
 #include "Skills/System/SkillSet.h"
@@ -49,6 +50,20 @@ void Player::_bind_methods()
                             PROPERTY_HINT_RESOURCE_TYPE, 
                             "SkillSet"), 
                "SetSkillSet", "GetSkillSet");
+}
+
+void PlayerData::CreateViewModel()
+{
+  m_viewModel = std::make_shared<PlayerVM>();
+}
+
+void PlayerData::SetHealth(int32_t newHealth)
+{
+  health = Math::clamp(newHealth, 0, maxHealth);
+  if (m_viewModel)
+  {
+    m_viewModel->NotifyHealthChanged(health);
+  }
 }
 
 void Player::_ready()
@@ -91,7 +106,7 @@ void Player::_ready()
   m_skillSet->InstantiateSkills(this);
 
   // Bind Active Skills to input
-  int index = 1;
+  int32_t index = 1;
   Vector<ActiveSkillNode*> activeSkills = m_skillSet->GetActiveSkills();
   for (ActiveSkillNode* activeSkill : activeSkills)
   {
@@ -106,6 +121,10 @@ void Player::_ready()
   {
     m_playerUI->PopulateSkillList(m_skillSet.ptr());
   }
+
+  m_playerData.CreateViewModel();
+
+  m_playerUI->BindPlayerVM(m_playerData.GetViewModel().lock());
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
@@ -156,7 +175,7 @@ void Player::_physics_process(double delta)
     }
   }
 
-  for (int index = 1; index < m_maxSkillSlots; index++)
+  for (int32_t index = 1; index < m_maxSkillSlots; index++)
   {
     String actionName = "skill_" + String::num_int64(index);
     if (Input::get_singleton()->is_action_just_pressed(actionName))
@@ -169,7 +188,12 @@ void Player::_physics_process(double delta)
       }
     }
   }
-  
+
+  if (Input::get_singleton()->is_action_just_pressed("cheat_heal"))
+  {
+    m_playerData.SetHealth(m_playerData.GetHealth() - 10);
+  }
+
   MoveToTarget(delta);
 }
 

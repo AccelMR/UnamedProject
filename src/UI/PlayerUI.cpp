@@ -6,21 +6,26 @@
 #include "Skills/System/SkillBase.h"
 #include "Skills/System/SkillSet.h"
 
+#include "UI/ViewModels/PlayerVM.h"
+
 using namespace godot;
 
 void PlayerUI::_bind_methods() 
 {
   ClassDB::bind_method(D_METHOD("CreateSkillButton", "skillResource"), &PlayerUI::CreateSkillButton);
+  ClassDB::bind_method(D_METHOD("OnHealthChanged", "newHealth"), &PlayerUI::OnHealthChanged);
 }
 
 void PlayerUI::_ready()
 {
   m_skillList = get_node<ItemList>("SkillList");
-  if (!m_skillList)
-  {
-    UtilityFunctions::push_warning("PlayerUI: SkillList not found!");
-    return;
-  }
+  DEV_ASSERT(m_skillList);
+
+  m_topBar = get_node<HBoxContainer>("TopBar");
+  DEV_ASSERT(m_topBar);
+
+  m_healthLabel = m_topBar->get_node<Label>("HealthLabel");
+  DEV_ASSERT(m_healthLabel);
 }
 
 void PlayerUI::PopulateSkillList(const SkillSet* skillSet)
@@ -41,6 +46,18 @@ void PlayerUI::PopulateSkillList(const SkillSet* skillSet)
   skillSet->ForEachSkillNode(Callable(this, "CreateSkillButton"));
 }
 
+void PlayerUI::BindPlayerVM(const std::shared_ptr<PlayerVM>& viewModel)
+{
+  if (!viewModel)
+  {
+    UtilityFunctions::push_warning("PlayerUI: Invalid PlayerVM!");
+    return;
+  }
+  // Subscribe to health changes
+  viewModel->AddHealthChangedListener(Callable(this, "OnHealthChanged"));
+  OnHealthChanged(viewModel->GetHealth());
+}
+
 void PlayerUI::CreateSkillButton(SkillNode* skillNode)
 {
   if (!skillNode)
@@ -55,7 +72,7 @@ void PlayerUI::CreateSkillButton(SkillNode* skillNode)
     return;
   }
   
-  int itemIndex = -1;
+  int32_t itemIndex = -1;
 
   String skillName = skillResource->GetName();
   Ref<Texture2D> skillIcon = skillResource->GetIcon();

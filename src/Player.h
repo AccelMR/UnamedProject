@@ -10,6 +10,8 @@
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
 
+#include <memory>
+
 using namespace godot;
 
 class InputManager;
@@ -18,6 +20,47 @@ class PlayerUI;
 class SkillFireCone;
 class SkillSet;
 class SkillResource;
+class PlayerVM;
+
+class PlayerData
+{
+ public:
+  PlayerData() = default;
+  ~PlayerData() = default;
+  void CreateViewModel();
+  std::weak_ptr<PlayerVM> GetViewModel() const { return m_viewModel; }
+
+  int32_t GetHealth() const { return health; }
+  void SetHealth(int32_t newHealth);
+
+  int32_t GetMaxHealth() const { return maxHealth; }
+  void SetMaxHealth(int32_t newMaxHealth)
+  {
+    maxHealth = newMaxHealth;
+    health = Math::clamp(health, 0, maxHealth);
+  }
+
+  int32_t GetStamina() const { return stamina; }
+  void SetStamina(int32_t newStamina)
+  {
+    stamina = Math::clamp(newStamina, 0, maxStamina);
+  }
+
+  int32_t GetMaxStamina() const { return maxStamina; }
+  void SetMaxStamina(int32_t newMaxStamina)
+  {
+    maxStamina = newMaxStamina;
+    stamina = Math::clamp(stamina, 0, maxStamina);
+  }
+
+ private:
+  int32_t health = 100;
+  int32_t maxHealth = 100;
+  int32_t stamina = 100;
+  int32_t maxStamina = 100;
+
+  std::shared_ptr<PlayerVM> m_viewModel;
+};
 
 class Player : public CharacterBody3D
 {
@@ -41,7 +84,7 @@ class Player : public CharacterBody3D
 
   Ref<SkillSet> GetSkillSet() const { return m_skillSet; }
   void SetSkillSet(const Ref<SkillSet>& skillSet) { m_skillSet = skillSet; }
-  
+
  protected:
   static void _bind_methods();
 
@@ -58,7 +101,12 @@ class Player : public CharacterBody3D
   InputManager* m_inputManager;
   PlayerUI* m_playerUI;
 
-  int m_maxSkillSlots = 4;
+  // Custom class to manage Player state and logic
+  std::shared_ptr<PlayerVM> m_viewModel;
+
+  PlayerData m_playerData;
+
+  int32_t m_maxSkillSlots = 4;
   float m_speed = 5.0f;
 
   bool m_bHasTarget = false;
