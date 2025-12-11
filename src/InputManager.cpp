@@ -46,8 +46,8 @@ void InputManager::SetInputMode(InputMode mode)
 
     // TODO: this emitter doesn't work or I didn't connect it properly(?)
     emit_signal("onModeChanged",
-                static_cast<int>(m_inputMode),
-                static_cast<int>(oldMode));
+                static_cast<int32_t>(m_inputMode),
+                static_cast<int32_t>(oldMode));
   }
 }
 void InputManager::_input(const Ref<InputEvent> &event)
