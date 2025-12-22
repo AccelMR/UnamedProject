@@ -4,6 +4,7 @@
 
 #include <godot_cpp/classes/particle_process_material.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
+#include <godot_cpp/classes/timer.hpp>
 
 using namespace godot;
 
@@ -30,17 +31,17 @@ class FireConeResource : public SkillResource
   FireConeResource() = default;
   virtual ~FireConeResource() = default;
 
-  float getConeAngle() const { return  m_data.coneAngle; }
-  void setConeAngle(float angle) { m_data.coneAngle = angle; }
+  float GetConeAngle() const { return  m_data.coneAngle; }
+  void SetConeAngle(float angle) { m_data.coneAngle = angle; }
 
-  float getConeLength() const { return m_data.coneLength; }
-  void setConeLength(float length) { m_data.coneLength = length; }
+  float GetConeLength() const { return m_data.coneLength; }
+  void SetConeLength(float length) { m_data.coneLength = length; }
 
-  void setFireDamage(float damage) { m_data.fireDamage = damage; }
-  float getFireDamage() const { return m_data.fireDamage; }
+  void SetFireDamage(float damage) { m_data.fireDamage = damage; }
+  float GetFireDamage() const { return m_data.fireDamage; }
 
-  float getDuration() const { return m_data.duration; }
-  void setDuration(float duration) { m_data.duration = duration; }
+  float GetDuration() const { return m_data.duration; }
+  void SetDuration(float duration) { m_data.duration = duration; }
 
   Ref<StandardMaterial3D> GetMeshMaterial() const { return m_data.meshMaterial; }
   void SetMeshMaterial(const Ref<StandardMaterial3D>& material) { m_data.meshMaterial = material; }
@@ -48,7 +49,7 @@ class FireConeResource : public SkillResource
   Ref<ParticleProcessMaterial> GetVfxMaterial() const { return m_data.vfxMaterial; }
   void SetVfxMaterial(const Ref<ParticleProcessMaterial>& material) { m_data.vfxMaterial = material; }
 
-  SkillNode* CreateSkillNodeForThisResource() override;
+  SkillNode* CreateSkillNodeForThisResource(Node* owner) override;
 
  protected:
   static void _bind_methods();
@@ -57,31 +58,35 @@ class FireConeResource : public SkillResource
   FireConeData m_data;
 };
 
-class SkillFireCone : public SkillNode
+class SkillFireCone : public ActiveSkillNode
 {
-  GDCLASS(SkillFireCone, SkillNode);
+  GDCLASS(SkillFireCone, ActiveSkillNode);
 
  public:
+
   SkillFireCone() = default;
   ~SkillFireCone() override = default;
 
-  void init(Node* owner) override;
-  void execute() override;
-  Node* getOwner() const override { return m_owner; }
-
-  Ref<SkillResource> getSkillResource() const override { return m_skillResource; }
-  void setSkillResource(const Ref<FireConeResource>& resource) { m_skillResource = resource; }
-
-  // Debug:
-  void drawDebugCone();
-
+  void Execute() override;
+  Node* GetOwner() const override { return m_owner; }
+  
+  Ref<SkillResource> GetSkillResource() const override { return m_skillResource; }
+  void SetSkillResource(const Ref<FireConeResource>& resource) { m_skillResource = resource; }
+  
  protected:
+  friend class FireConeResource;
+
   static void _bind_methods();
+  
+  void Init(Node* owner) override;
+
+  void OnFireConeCooldownComplete();
 
  private:
   Node* m_owner = nullptr;
   FireCone* m_fireConeNode = nullptr;
   Ref<FireConeResource> m_skillResource;
   FireConeData m_fireConeData;
+  Timer* m_cooldownTimer = nullptr;
 };
 

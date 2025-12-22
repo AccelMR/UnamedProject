@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build_extension_debug",
+      "type": "shell",
+
+      "command": "",
+
+      "args": [
+        "debug_symbols=yes",
+        "target=template_debug"
+      ],
+
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+
+      "linux": {
+        "command": "scons"
+      },
+
+      "windows": {
+        "command": "py -m SCons"
+      },
+
+      "problemMatcher": []
+    }
+  ]
+}

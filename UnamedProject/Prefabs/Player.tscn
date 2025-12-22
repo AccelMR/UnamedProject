@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bwnunsxgnti6q"]
+[gd_scene load_steps=9 format=3 uid="uid://bwnunsxgnti6q"]
 
 [ext_resource type="PackedScene" uid="uid://cfkg6phbko51a" path="res://Models/TheBoss.fbx" id="1_b43ah"]
 [ext_resource type="SkillSet" uid="uid://db6jne1c4coy1" path="res://Prefabs/Skills/Sets/Player_Test.tres" id="1_shmu5"]
 [ext_resource type="AnimationLibrary" uid="uid://d07ssqj5w2q5d" path="res://Models/Animations/Idle.fbx" id="2_shmu5"]
 [ext_resource type="AnimationLibrary" uid="uid://b5pkslwedc7pi" path="res://Models/Animations/Run.fbx" id="3_vxq8l"]
+[ext_resource type="Texture2D" uid="uid://4r50jqlfsocb" path="res://Prefabs/Skills/Resources/Textures/Icons/fireIcon.png" id="5_vxq8l"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ix3kg"]
 
@@ -386,5 +387,27 @@ bones/66/rotation = Quaternion(0.4741958, 0.024305869, -0.057415843, 0.878209)
 libraries/ = SubResource("AnimationLibrary_6ev8a")
 libraries/Idle = ExtResource("2_shmu5")
 libraries/Run = ExtResource("3_vxq8l")
+
+[node name="PlayerUI" type="PlayerUI" parent="." unique_id=1754631094]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SkillList" type="ItemList" parent="PlayerUI" unique_id=1451836559]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+item_count = 1
+max_columns = 0
+item_0/text = "Test"
+item_0/icon = ExtResource("5_vxq8l")
 
 [editable path="Model"]

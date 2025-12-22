@@ -1,4 +1,4 @@
-#include "SkillBase.h"
+#include "Skills/System/SkillBase.h"
 
 using namespace godot;
 
@@ -7,40 +7,105 @@ void SkillNode::_bind_methods()
   UtilityFunctions::print("SkillNode::_bind_methods called");
 }
 
-void SkillResource::_bind_methods() {}
-
-void SkillSet::_bind_methods()
+void SkillResource::_bind_methods() 
 {
-  ClassDB::bind_method(D_METHOD("GetSkills"), &SkillSet::GetSkills);
-  ClassDB::bind_method(D_METHOD("SetSkills", "skills"), &SkillSet::SetSkills);
+  ClassDB::bind_method(D_METHOD("SetName", "name"), &SkillResource::SetName);
+  ClassDB::bind_method(D_METHOD("GetName"), &SkillResource::GetName);
 
-  ClassDB::bind_method(D_METHOD("ForEachSkill", "func"), &SkillSet::ForEachSkill);
+  ClassDB::bind_method(D_METHOD("SetDescription", "description"), &SkillResource::SetDescription);
+  ClassDB::bind_method(D_METHOD("GetDescription"), &SkillResource::GetDescription);
 
-  ADD_PROPERTY(PropertyInfo(Variant::ARRAY,
-                            "m_skills",
-                            PROPERTY_HINT_ARRAY_TYPE,
-                            "SkillResource"),
-               "SetSkills",
-               "GetSkills");
+  ClassDB::bind_method(D_METHOD("SetIcon", "icon"), &SkillResource::SetIcon);
+  ClassDB::bind_method(D_METHOD("GetIcon"), &SkillResource::GetIcon);
+
+  ClassDB::bind_method(D_METHOD("SetCooldownTime", "cooldown_time"), &SkillResource::SetCooldownTime);
+  ClassDB::bind_method(D_METHOD("GetCooldownTime"), &SkillResource::GetCooldownTime);
+
+  ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "SetName", "GetName");
+  ADD_PROPERTY(PropertyInfo(Variant::STRING, "description"), "SetDescription", "GetDescription");
+  ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "icon", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "SetIcon", "GetIcon");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "cooldownTime"), "SetCooldownTime", "GetCooldownTime");
 }
+
+void PassiveSkillNode::_bind_methods() {}
+
+void ActiveSkillNode::_bind_methods() {}
 
 SkillNode::SkillNode() {}
 
-void SkillNode::init(Node *owner) {}
+void SkillNode::Init(Node *owner) {}
 
-void SkillNode::execute() {}
-
-void SkillSet::ForEachSkill(const Callable& func) const
+void SkillNode::Execute() 
 {
-  if (!func.is_valid())
+  for (const Callable &callback : m_onExecuteCallbacks)
   {
-    UtilityFunctions::push_warning("SkillSet::ForEachSkill called with invalid Callable");
+    if (callback.is_valid())
+    {
+      callback.call();
+    }
+  }
+}
+
+void SkillNode::AddOnExecuteCallback(const Callable &callback)
+{
+  if (!callback.is_valid())
+  {
+    UtilityFunctions::push_warning("SkillNode::AddOnExecuteCallback: Invalid callback!");
     return;
   }
 
-  for (int i = 0; i < m_skills.size(); ++i)
+  if (!m_onExecuteCallbacks.has(callback))
   {
-    Variant skillVariant = m_skills[i];
-    func.call(skillVariant);
+    m_onExecuteCallbacks.push_back(callback);
   }
+}
+
+void SkillNode::RemoveOnExecuteCallback(const StringName &callbackName)
+{
+  for (int i = 0; i < m_onExecuteCallbacks.size(); ++i)
+  {
+    const Callable &callback = m_onExecuteCallbacks[i];
+    if (callback.is_valid() && callback.get_method() == callbackName)
+    {
+      m_onExecuteCallbacks.remove_at(i);
+      return;
+    }
+  }
+}
+
+void SkillNode::ClearOnExecuteCallbacks()
+{
+  m_onExecuteCallbacks.clear();
+}
+
+void SkillNode::AddOnCooldownCompleteCallback(const Callable &callback)
+{
+  if (!callback.is_valid())
+  {
+    UtilityFunctions::push_warning("SkillNode::AddOnCooldownCompleteCallback: Invalid callback!");
+    return;
+  }
+
+  if (!m_onCooldownCompleteCallbacks.has(callback))
+  {
+    m_onCooldownCompleteCallbacks.push_back(callback);
+  }
+}
+
+void SkillNode::RemoveOnCooldownCompleteCallback(const StringName &callbackName)
+{
+  for (int i = 0; i < m_onCooldownCompleteCallbacks.size(); ++i)
+  {
+    const Callable &callback = m_onCooldownCompleteCallbacks[i];
+    if (callback.is_valid() && callback.get_method() == callbackName)
+    {
+      m_onCooldownCompleteCallbacks.remove_at(i);
+      return;
+    }
+  }
+}
+
+void SkillNode::ClearOnCooldownCompleteCallbacks()
+{
+  m_onCooldownCompleteCallbacks.clear();
 }

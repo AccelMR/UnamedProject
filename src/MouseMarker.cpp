@@ -2,10 +2,10 @@
 
 void MouseMarker::_bind_methods() 
 {
-  ClassDB::bind_method(D_METHOD("setMarkShrinkSpeed", "speed"), &MouseMarker::setMarkShrinkSpeed);
-  ClassDB::bind_method(D_METHOD("getMarkShrinkSpeed"), &MouseMarker::getMarkShrinkSpeed);
+  ClassDB::bind_method(D_METHOD("SetMarkShrinkSpeed", "speed"), &MouseMarker::SetMarkShrinkSpeed);
+  ClassDB::bind_method(D_METHOD("GetMarkShrinkSpeed"), &MouseMarker::GetMarkShrinkSpeed);
 
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "markShrinkSpeed"), "setMarkShrinkSpeed", "getMarkShrinkSpeed");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "markShrinkSpeed"), "SetMarkShrinkSpeed", "GetMarkShrinkSpeed");
 }
 
 void MouseMarker::_ready() { }
@@ -28,7 +28,7 @@ void MouseMarker::_process(double delta)
 
 }
 
-void MouseMarker::updateMarkerPosition(const Vector3& position) 
+void MouseMarker::UpdateMarkerPosition(const Vector3& position) 
 {
   set_global_position(position);
   m_bIsMarkJustPlaced = true;

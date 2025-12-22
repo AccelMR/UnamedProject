@@ -88,6 +88,38 @@ skill_1={
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":2,"pressure":0.0,"pressed":true,"script":null)
 ]
 }
+skill_2={
+"deadzone": 0.2,
+"events": []
+}
+skill_3={
+"deadzone": 0.2,
+"events": []
+}
+skill_4={
+"deadzone": 0.2,
+"events": []
+}
+skill_5={
+"deadzone": 0.2,
+"events": []
+}
+skill_6={
+"deadzone": 0.2,
+"events": []
+}
+skill_7={
+"deadzone": 0.2,
+"events": []
+}
+skill_8={
+"deadzone": 0.2,
+"events": []
+}
+skill_9={
+"deadzone": 0.2,
+"events": []
+}
 
 [physics]
 

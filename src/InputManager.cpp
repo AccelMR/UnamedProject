@@ -36,7 +36,7 @@ void InputManager::_bind_methods()
                         PropertyInfo(Variant::INT, "old_mode")));
 }
 
-void InputManager::setInputMode(InputMode mode)
+void InputManager::SetInputMode(InputMode mode)
 {
   if (m_inputMode != mode)
   {
@@ -54,27 +54,27 @@ void InputManager::_input(const Ref<InputEvent> &event)
 {
   if (InputEventJoypadButton* joyButton = Object::cast_to<InputEventJoypadButton>(event.ptr()))
   {
-    setInputMode(INPUT_MODE_GAMEPAD);
+    SetInputMode(INPUT_MODE_GAMEPAD);
   }
   else if (InputEventJoypadMotion* joyAxis = Object::cast_to<InputEventJoypadMotion>(event.ptr()))
   {
     // Only change it if there's significant movement
     if (Math::abs(joyAxis->get_axis_value()) > m_gamepadDeadzone)
     {
-      setInputMode(INPUT_MODE_GAMEPAD);
+      SetInputMode(INPUT_MODE_GAMEPAD);
     }
   }
 
   else if (InputEventKey* key = Object::cast_to<InputEventKey>(event.ptr()))
   {
-    setInputMode(INPUT_MODE_KVM);
+    SetInputMode(INPUT_MODE_KVM);
   }
   else if (InputEventMouseButton* mouseButton = Object::cast_to<InputEventMouseButton>(event.ptr()))
   {
-    setInputMode(INPUT_MODE_KVM);
+    SetInputMode(INPUT_MODE_KVM);
   }
   else if (InputEventMouseMotion* mouseMotion = Object::cast_to<InputEventMouseMotion>(event.ptr()))
   {
-    setInputMode(INPUT_MODE_KVM);
+    SetInputMode(INPUT_MODE_KVM);
   }
 }

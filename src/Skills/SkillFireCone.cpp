@@ -19,10 +19,10 @@ FireConeData& FireConeData::operator=(Ref<FireConeResource> resource)
 {
   if (resource.is_valid())
   {
-    coneAngle = resource->getConeAngle();
-    coneLength = resource->getConeLength();
-    fireDamage = resource->getFireDamage();
-    duration = resource->getDuration();
+    coneAngle = resource->GetConeAngle();
+    coneLength = resource->GetConeLength();
+    fireDamage = resource->GetFireDamage();
+    duration = resource->GetDuration();
     meshMaterial = resource->GetMeshMaterial();
     vfxMaterial = resource->GetVfxMaterial();
   }
@@ -31,17 +31,17 @@ FireConeData& FireConeData::operator=(Ref<FireConeResource> resource)
 
 void FireConeResource::_bind_methods()
 {
-  ClassDB::bind_method(D_METHOD("setConeAngle", "angle"), &FireConeResource::setConeAngle);
-  ClassDB::bind_method(D_METHOD("getConeAngle"), &FireConeResource::getConeAngle);
+  ClassDB::bind_method(D_METHOD("SetConeAngle", "angle"), &FireConeResource::SetConeAngle);
+  ClassDB::bind_method(D_METHOD("GetConeAngle"), &FireConeResource::GetConeAngle);
 
-  ClassDB::bind_method(D_METHOD("setConeLength", "length"), &FireConeResource::setConeLength);
-  ClassDB::bind_method(D_METHOD("getConeLength"), &FireConeResource::getConeLength);
+  ClassDB::bind_method(D_METHOD("SetConeLength", "length"), &FireConeResource::SetConeLength);
+  ClassDB::bind_method(D_METHOD("GetConeLength"), &FireConeResource::GetConeLength);
 
-  ClassDB::bind_method(D_METHOD("setFireDamage", "damage"), &FireConeResource::setFireDamage);
-  ClassDB::bind_method(D_METHOD("getFireDamage"), &FireConeResource::getFireDamage);
+  ClassDB::bind_method(D_METHOD("SetFireDamage", "damage"), &FireConeResource::SetFireDamage);
+  ClassDB::bind_method(D_METHOD("GetFireDamage"), &FireConeResource::GetFireDamage);
 
-  ClassDB::bind_method(D_METHOD("setDuration", "duration"), &FireConeResource::setDuration);
-  ClassDB::bind_method(D_METHOD("getDuration"), &FireConeResource::getDuration);
+  ClassDB::bind_method(D_METHOD("SetDuration", "duration"), &FireConeResource::SetDuration);
+  ClassDB::bind_method(D_METHOD("GetDuration"), &FireConeResource::GetDuration);
 
   ClassDB::bind_method(D_METHOD("SetVfxMaterial", "material"), &FireConeResource::SetVfxMaterial);
   ClassDB::bind_method(D_METHOD("GetVfxMaterial"), &FireConeResource::GetVfxMaterial);
@@ -49,10 +49,12 @@ void FireConeResource::_bind_methods()
   ClassDB::bind_method(D_METHOD("SetMeshMaterial", "material"), &FireConeResource::SetMeshMaterial);
   ClassDB::bind_method(D_METHOD("GetMeshMaterial"), &FireConeResource::GetMeshMaterial);
 
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneAngle"), "setConeAngle", "getConeAngle");
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneLength"), "setConeLength", "getConeLength");
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fireDamage"), "setFireDamage", "getFireDamage");
-  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration"), "setDuration", "getDuration");
+  ClassDB::bind_method(D_METHOD("CreateSkillNodeForThisResource", "owner"), &FireConeResource::CreateSkillNodeForThisResource); 
+
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneAngle"), "SetConeAngle", "GetConeAngle");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "coneLength"), "SetConeLength", "GetConeLength");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fireDamage"), "SetFireDamage", "GetFireDamage");
+  ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration"), "SetDuration", "GetDuration");
 
   ADD_PROPERTY(
       PropertyInfo(
@@ -75,23 +77,26 @@ void FireConeResource::_bind_methods()
 
 void SkillFireCone::_bind_methods()
 {
-  ClassDB::bind_method(D_METHOD("setSkillResource", "resource"), &SkillFireCone::setSkillResource);
-  ClassDB::bind_method(D_METHOD("getSkillResource"), &SkillFireCone::getSkillResource);
+  ClassDB::bind_method(D_METHOD("SetSkillResource", "resource"), &SkillFireCone::SetSkillResource);
+  ClassDB::bind_method(D_METHOD("GetSkillResource"), &SkillFireCone::GetSkillResource);
+
+  ClassDB::bind_method(D_METHOD("OnFireConeCooldownComplete"), &SkillFireCone::OnFireConeCooldownComplete);
 
   ADD_PROPERTY(
       PropertyInfo(Variant::OBJECT, "SkillResource", PROPERTY_HINT_RESOURCE_TYPE, "FireConeResource"),
-      "setSkillResource", "getSkillResource");
+      "SetSkillResource", "GetSkillResource");
 }
 
-SkillNode* FireConeResource::CreateSkillNodeForThisResource()
+SkillNode* FireConeResource::CreateSkillNodeForThisResource(Node* owner)
 {
   UtilityFunctions::print("FireConeResource::CreateSkillNodeForThisResource called");
   SkillFireCone* skillNode = memnew(SkillFireCone);
-  skillNode->setSkillResource(Ref<FireConeResource>(this));
-  return skillNode;
+  skillNode->SetSkillResource(Ref<FireConeResource>(this));
+  skillNode->Init(owner);
+  return Object::cast_to<SkillNode>(skillNode);
 }
 
-void SkillFireCone::init(Node *owner)
+void SkillFireCone::Init(Node *owner)
 {
   m_owner = owner;
   if (m_skillResource.is_valid())
@@ -100,7 +105,7 @@ void SkillFireCone::init(Node *owner)
   }
   else
   {
-    UtilityFunctions::push_warning("SkillFireCone::init: SkillResource is not valid.");
+    UtilityFunctions::push_warning("SkillFireCone::Init: SkillResource is not valid.");
   }
 
   // Create the FireCone node
@@ -113,27 +118,65 @@ void SkillFireCone::init(Node *owner)
 
     m_fireConeNode->SetupCone(m_fireConeData);
 
-    UtilityFunctions::print("SkillFireCone::init: FireCone node created and added to owner.");
+    UtilityFunctions::print("SkillFireCone::Init: FireCone node created and added to owner.");
     UtilityFunctions::print("  Cone Angle: " + String::num(m_fireConeData.coneAngle));
     UtilityFunctions::print("  Cone Length: " + String::num(m_fireConeData.coneLength));
     UtilityFunctions::print("  Fire Damage: " + String::num(m_fireConeData.fireDamage));
     UtilityFunctions::print("  Duration: " + String::num(m_fireConeData.duration));
+    UtilityFunctions::print("  Cooldown Time: " + String::num(m_skillResource->GetCooldownTime()));
+
+    // Setup cooldown timer
+    m_cooldownTimer = memnew(Timer);
+    m_cooldownTimer->set_wait_time(m_skillResource->GetCooldownTime());
+    m_cooldownTimer->set_one_shot(true);
+    m_cooldownTimer->connect("timeout", Callable(this, "OnFireConeCooldownComplete"));
+    call_deferred("add_child", m_cooldownTimer);
   }
 }
 
-void SkillFireCone::execute()
+void SkillFireCone::Execute()
 {
+  // This calls the callbacks registered with AddOnExecuteCallback
+  SkillNode::Execute();
+  
   if (!m_fireConeNode)
   {
-    UtilityFunctions::push_warning("SkillFireCone::execute: FireCone node is null.");
+    UtilityFunctions::push_warning("SkillFireCone::Execute: FireCone node is null.");
     return;
   }
 
   if (m_fireConeNode->IsActive())
   {
-    UtilityFunctions::push_warning("SkillFireCone::execute: FireCone already active, ignoring.");
+    UtilityFunctions::push_warning("SkillFireCone::Execute: FireCone already active, ignoring.");
     return;
   }
 
+  if (m_isOnCooldown)
+  {
+    UtilityFunctions::push_warning("SkillFireCone::Execute: Skill is on cooldown, ignoring.");
+    return;
+  }
+
+  if (m_cooldownTimer)
+  {
+    m_cooldownTimer->start();
+  }
+
+  m_isOnCooldown = true;
   m_fireConeNode->ActivateFor(m_fireConeData.duration);
+}
+
+void SkillFireCone::OnFireConeCooldownComplete()
+{
+  m_isOnCooldown = false;
+  
+  // This calls the callbacks registered with AddOnCooldownCompleteCallback
+  for (const Callable& callback : m_onCooldownCompleteCallbacks)
+  {
+    if (callback.is_valid())
+    {
+      callback.call();
+      UtilityFunctions::print("SkillFireCone::OnFireConeCooldownComplete: Called cooldown complete callback.");
+    }
+  }
 }
