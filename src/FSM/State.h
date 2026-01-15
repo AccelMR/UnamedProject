@@ -4,6 +4,10 @@ class FiniteStateMachine;
 
 class State
 {
+public:
+  State() = default;
+  ~State() = default;
+
   protected:
     FiniteStateMachine* m_FiniteStateMachine;
 

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <godot_cpp/variant/dictionary.hpp>
-#include "register_states.h"
 
 class State;
+enum StateID;
 
 using namespace godot;
 

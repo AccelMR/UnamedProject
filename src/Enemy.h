@@ -1,30 +1,29 @@
 #pragma once
 
-#include "Agent.h"
+#include "IAgent.h"
+#include <godot_cpp/classes/navigation_agent3d.hpp>
+#include <godot_cpp/variant/vector3.hpp>
+#include <godot_cpp/classes/character_body3d.hpp>
+#include "FSM/FiniteStateMachine.h"
 
-namespace godot 
+using namespace godot;
+
+class Enemy : public CharacterBody3D, public IAgent
 {
-  class NavigationAgent3D;
+  GDCLASS(Enemy, CharacterBody3D);
   
-  class Enemy : public Agent
-  {
-    GDCLASS(Enemy, Agent);
+public:
+  // Start
+  void _ready() override;
+  // Update
+  void _process(double delta) override;
   
-  public:
-    Enemy() = default;
-    ~Enemy() = default;
+protected:
+  static void _bind_methods();
   
-    // Start
-    void _ready() override;
-    // Update
-    void _process(double delta) override;
-  
-  protected:
-    static void _bind_methods();
-  
-  private:
-    NavigationAgent3D* m_navigationAgent;
-    Vector3 m_destination;
-    Vector3 m_direction;
-  };
-}
+private:
+  NavigationAgent3D* m_navigationAgent;
+  Vector3 m_destination;
+  Vector3 m_direction;
+  FiniteStateMachine* m_fsm;
+};
