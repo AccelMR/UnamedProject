@@ -12,6 +12,8 @@ public:
   Agent() = default;
   ~Agent() = default;
 
+  virtual void dummyPureVirtualFunction() {}
+
 protected:
   static void _bind_methods();
 };

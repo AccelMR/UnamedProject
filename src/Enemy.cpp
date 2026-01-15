@@ -2,7 +2,10 @@
 
 #include <godot_cpp/classes/navigation_agent3d.hpp>  
 
-void Enemy::_bind_methods() {}
+void Enemy::_bind_methods() 
+{
+  ClassDB::bind_method(D_METHOD("dummyPureVirtualFunction"), &Enemy::dummyPureVirtualFunction);
+}
 
 void Enemy::_ready()
 {
@@ -25,4 +28,9 @@ void Enemy::_process(double delta)
     set_velocity(m_direction * 5.0f);
     move_and_slide();
   }
+}
+
+void Enemy::dummyPureVirtualFunction()
+{
+    UtilityFunctions::push_warning("Enemy::dummyPureVirtualFunction called");
 }
