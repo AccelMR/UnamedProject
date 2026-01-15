@@ -32,10 +32,9 @@ void initialize_example_module(ModuleInitializationLevel p_level)
   GDREGISTER_CLASS(SkillResource);
   GDREGISTER_CLASS(FireConeResource);
 
-  
-  GDREGISTER_RUNTIME_CLASS(Agent);
-  GDREGISTER_RUNTIME_CLASS(CameraController);
   GDREGISTER_RUNTIME_CLASS(Enemy);
+
+  GDREGISTER_RUNTIME_CLASS(CameraController);
   GDREGISTER_RUNTIME_CLASS(FireCone);
   GDREGISTER_RUNTIME_CLASS(InputManager);
   GDREGISTER_RUNTIME_CLASS(MouseMarker);
