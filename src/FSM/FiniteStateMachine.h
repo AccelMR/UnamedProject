@@ -3,7 +3,15 @@
 #include <godot_cpp/variant/dictionary.hpp>
 
 class State;
-enum StateID;
+enum StateID
+{
+  NONE = 0,
+  IDLE,
+  PATROL,
+  PURSUIT,
+  ATTACK
+};
+
 
 using namespace godot;
 
