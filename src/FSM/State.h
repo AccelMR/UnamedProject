@@ -1,17 +1,21 @@
 #pragma once
 
+#include<memory>
+
+using namespace std;
+
 class FiniteStateMachine;
 
 class State
 {
 public:
   State() = default;
-  ~State() = default;
+  virtual ~State() = default;
 
-  protected:
-    FiniteStateMachine* m_FiniteStateMachine;
+protected:
+    shared_ptr<FiniteStateMachine> m_finiteStateMachine;
 
-  public:
+public:
     virtual void OnEnter() = 0;
     virtual void OnUpdate() = 0;
     virtual void OnExit() = 0;

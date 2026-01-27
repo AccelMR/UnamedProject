@@ -1,11 +1,14 @@
 #pragma once
 
 #include "../State.h" 
+#include "../FiniteStateMachine.h"
+
+#include<memory>
 
 class IdleState : public State
 {
 public:
-  IdleState() = default;
+  IdleState(const shared_ptr<FiniteStateMachine>& stateMachine);
   ~IdleState() = default;
 
 public:

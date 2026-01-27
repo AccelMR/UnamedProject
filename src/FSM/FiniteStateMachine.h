@@ -2,7 +2,14 @@
 
 #include <godot_cpp/variant/dictionary.hpp>
 
-class State;
+#include <memory>
+#include <map>
+
+#include "State.h"
+
+using namespace godot;
+using namespace std;
+
 enum StateID
 {
   NONE = 0,
@@ -11,9 +18,6 @@ enum StateID
   PURSUIT,
   ATTACK
 };
-
-
-using namespace godot;
 
 class FiniteStateMachine
 {
@@ -25,14 +29,14 @@ public:
   void Initialize();
 	void SetState(StateID id);
   void Update();
-  void AddState(StateID state, State* newState);
+  void AddState(StateID state, const shared_ptr<State>& newState);
 
 private:
   void ChangeState(StateID toState);
 
 private:
-  Dictionary m_states;
+  map<StateID, shared_ptr<State>> m_states;
   StateID m_currentStateID;
   StateID m_toStateID;
-  State* m_currentState;
+  weak_ptr<State> m_currentState;
 };

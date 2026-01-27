@@ -1,5 +1,4 @@
 ﻿#include "FiniteStateMachine.h"
-#include "State.h"
 
 #include <godot_cpp/variant/variant.hpp>
 #include <godot_cpp/classes/object.hpp>
@@ -22,34 +21,36 @@ void FiniteStateMachine::Update()
     ChangeState(m_toStateID);
   }
 
-  if (m_currentState != nullptr)
+  if (!m_currentState.expired())
   {
-    m_currentState->OnUpdate();
+   (*m_currentState.lock()).OnUpdate();
   }
 }
 
-void FiniteStateMachine::AddState(StateID state, State* newState)
+void FiniteStateMachine::AddState(StateID state, const shared_ptr<State>& newState)
 {
-  m_states[state] = newState;
+  m_states.insert({state, newState});
 }
 
 void FiniteStateMachine::ChangeState(StateID toState)
 {
-  if(m_states.is_empty())
+  if(m_states.size() == 0)
     return;
 
   // Exits from current state if exists
-  if(m_currentState != nullptr)
-    m_currentState->OnExit();
+  if(!m_currentState.expired())
+  {
+    (*m_currentState.lock()).OnExit();
+  }
 
-  // Cast to State object
-  Variant v = m_states[toState];
-  Object* o = v;   // Variant → Object*
-  m_currentState = (State*)o;
-  if (m_currentState != nullptr)
+  // Set new state
+  m_currentState = m_states.find(toState)->second;  
+
+  // Enters new state
+  if (!m_currentState.expired())
   {
     m_currentStateID = toState;
 
-    m_currentState->OnEnter();
+    (*m_currentState.lock()).OnEnter();
   }
 }
