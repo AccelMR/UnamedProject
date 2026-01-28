@@ -1,6 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://c3tdt12j537lr"]
+[gd_scene load_steps=8 format=3 uid="uid://c3tdt12j537lr"]
 
 [ext_resource type="Environment" uid="uid://x4d4wqn4pk0d" path="res://Environments/Skybox.tres" id="1_8vbd8"]
+[ext_resource type="SkillSet" uid="uid://db6jne1c4coy1" path="res://Prefabs/Skills/Sets/Player_Test.tres" id="2_dvv2m"]
+[ext_resource type="PackedScene" uid="uid://bwnunsxgnti6q" path="res://Prefabs/Player.tscn" id="3_1d6yc"]
+[ext_resource type="PackedScene" uid="uid://cjqc7ke5ajhho" path="res://Prefabs/CameraController.tscn" id="4_e6hng"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_h37mb"]
 vertices = PackedVector3Array(-4.5, 0.5, -4.5, -4.5, 0.5, 4.5, 4.5, 0.5, 4.5, 4.5, 0.5, -4.5)
@@ -20,14 +23,18 @@ shadow_enabled = true
 environment = ExtResource("1_8vbd8")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1307748577]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
 navigation_mesh = SubResource("NavigationMesh_h37mb")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D" unique_id=276241073]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 use_collision = true
+collision_layer = 3
+collision_mask = 2
 size = Vector3(10, 1, 10)
 
 [node name="Enemy" type="Enemy" parent="." unique_id=1075185843]
+skillSet = ExtResource("2_dvv2m")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Enemy" unique_id=829555797]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -41,6 +48,8 @@ debug_path_custom_color = Color(0.92156863, 0.10980392, 0.10980392, 1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_8vbd8")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=773735679]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 8, 0)
-current = true
+[node name="Player" parent="." unique_id=636184571 instance=ExtResource("3_1d6yc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3671026, 1.0020916, 2.731755)
+
+[node name="CameraController" parent="." unique_id=47223066 instance=ExtResource("4_e6hng")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.18794155, 9.507413, 0.5197606)

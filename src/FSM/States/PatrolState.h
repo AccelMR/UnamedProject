@@ -10,7 +10,7 @@ class PatrolState : public State
 {
 public:
   PatrolState(const shared_ptr<FiniteStateMachine>& stateMachine,
-              const Enemy* agent);
+              Enemy* agent);
   ~PatrolState() = default;
 
 public:
@@ -19,5 +19,5 @@ public:
   void OnExit() override;
 
 private:
-    const Enemy* m_ptrAgent;
+    Enemy* m_ptrAgent;
 };
