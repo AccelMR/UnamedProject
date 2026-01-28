@@ -107,8 +107,8 @@ void Player::_ready()
 
   // Bind Active Skills to input
   int32_t index = 1;
-  Vector<ActiveSkillNode*> activeSkills = m_skillSet->GetActiveSkills();
-  for (ActiveSkillNode* activeSkill : activeSkills)
+  Vector<SkillNode*> activeSkills = m_skillSet->GetActiveSkills();
+  for (SkillNode* activeSkill : activeSkills)
   {
     String actionName = "skill_" + String::num_int64(index);
     m_skillExecutors[actionName] = activeSkill;
@@ -180,8 +180,8 @@ void Player::_physics_process(double delta)
     String actionName = "skill_" + String::num_int64(index);
     if (Input::get_singleton()->is_action_just_pressed(actionName))
     {
-      Variant executorVar = m_skillExecutors[actionName];
-      ActiveSkillNode* executor = Object::cast_to<ActiveSkillNode>(executorVar);
+      Variant executorVariant = m_skillExecutors[actionName];
+      SkillNode* executor = Object::cast_to<SkillNode>(executorVariant);
       if (executor)
       {
         executor->Execute();

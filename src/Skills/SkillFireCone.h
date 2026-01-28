@@ -58,9 +58,9 @@ class FireConeResource : public SkillResource
   FireConeData m_data;
 };
 
-class SkillFireCone : public ActiveSkillNode
+class SkillFireCone : public SkillNode
 {
-  GDCLASS(SkillFireCone, ActiveSkillNode);
+  GDCLASS(SkillFireCone, SkillNode);
 
  public:
 
@@ -72,6 +72,9 @@ class SkillFireCone : public ActiveSkillNode
   
   Ref<SkillResource> GetSkillResource() const override { return m_skillResource; }
   void SetSkillResource(const Ref<FireConeResource>& resource) { m_skillResource = resource; }
+
+  bool IsActiveSkill() const override { return true; }
+  bool IsPassiveSkill() const override { return false; }
   
  protected:
   friend class FireConeResource;

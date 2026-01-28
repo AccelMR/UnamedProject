@@ -126,7 +126,6 @@ class Player : public CharacterBody3D
 
   // Resource Dependencies
   Ref<PackedScene> m_resourceMarkerScene;
-
   Ref<SkillSet> m_skillSet;
 };
 

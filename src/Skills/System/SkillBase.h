@@ -47,6 +47,8 @@ class ISkillBase
   virtual void Execute() = 0;
   virtual Node* GetOwner() const = 0;
   virtual Ref<SkillResource> GetSkillResource() const = 0;
+  virtual bool IsActiveSkill() const = 0;
+  virtual bool IsPassiveSkill() const = 0;
 };
 
 class SkillNode : public Node, public ISkillBase
@@ -60,6 +62,8 @@ class SkillNode : public Node, public ISkillBase
   void Execute() override;
   Node* GetOwner() const override { return nullptr; }
   Ref<SkillResource> GetSkillResource() const override { return nullptr; }
+  bool IsActiveSkill() const override { return false; }
+  bool IsPassiveSkill() const override { return false; }
 
   bool IsOnCooldown() const { return m_isOnCooldown; }
 
@@ -79,27 +83,5 @@ class SkillNode : public Node, public ISkillBase
   Vector<Callable> m_onCooldownCompleteCallbacks;
 
   bool m_isOnCooldown = false;
-};
-
-class PassiveSkillNode : public SkillNode
-{
-  GDCLASS(PassiveSkillNode, SkillNode);
- public:
-  PassiveSkillNode() = default;
-  virtual ~PassiveSkillNode() = default;
-
- protected:
-  static void _bind_methods();
-};
-
-class ActiveSkillNode : public SkillNode
-{
-  GDCLASS(ActiveSkillNode, SkillNode);
- public:
-  ActiveSkillNode() = default;
-  virtual ~ActiveSkillNode() = default;
-
- protected:
-  static void _bind_methods();
 };
 

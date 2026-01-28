@@ -27,10 +27,6 @@ void SkillResource::_bind_methods()
   ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "cooldownTime"), "SetCooldownTime", "GetCooldownTime");
 }
 
-void PassiveSkillNode::_bind_methods() {}
-
-void ActiveSkillNode::_bind_methods() {}
-
 SkillNode::SkillNode() {}
 
 void SkillNode::Init(Node *owner) {}

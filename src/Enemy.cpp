@@ -94,6 +94,6 @@ void Enemy::MoveTo(const Vector3 &position)
 
 void Enemy::ExecuteAbility()
 {
-  Vector<ActiveSkillNode*> skills = m_skillSet->GetActiveSkills();
+  Vector<SkillNode*> skills = m_skillSet->GetActiveSkills();
   skills[0]->Execute();
 }

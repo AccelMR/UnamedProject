@@ -77,9 +77,9 @@ void SkillSet::ForEachSkillNode(const Callable& callback) const
   }
 }
 
-Vector<ActiveSkillNode*> SkillSet::GetActiveSkills() const
+Vector<SkillNode*> SkillSet::GetActiveSkills() const
 {
-  Vector<ActiveSkillNode*> activeSkills;
+  Vector<SkillNode*> activeSkills;
 
   if (!m_areSkillNodesInstantiated)
   {
@@ -89,12 +89,11 @@ Vector<ActiveSkillNode*> SkillSet::GetActiveSkills() const
 
   for (int32_t i = 0; i < m_skillNodes.size(); ++i)
   {
-    ActiveSkillNode* activeSkill = Object::cast_to<ActiveSkillNode>(m_skillNodes[i]);
-    if (activeSkill)
+    SkillNode* activeSkill = m_skillNodes[i];
+    if (activeSkill && activeSkill->IsActiveSkill())
     {
       activeSkills.push_back(activeSkill);
     }
   }
-
   return activeSkills;
 }
