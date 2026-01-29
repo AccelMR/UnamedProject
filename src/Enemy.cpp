@@ -17,6 +17,7 @@ void Enemy::_bind_methods()
   ClassDB::bind_method(D_METHOD("GetSkillSet"), &Enemy::GetSkillSet);
   ClassDB::bind_method(D_METHOD("SetSkillSet", "skillSet"), &Enemy::SetSkillSet);
   ClassDB::bind_method(D_METHOD("OnNavigationFinished"), &Enemy::OnNavigationFinished);
+  ClassDB::bind_method(D_METHOD("OnBodyEntered", "body"), &Enemy::OnBodyEntered);
 
   ADD_PROPERTY(PropertyInfo(Variant::OBJECT, 
                             "skillSet",
@@ -71,6 +72,11 @@ void Enemy::_ready()
   }
 
   m_skillSet->InstantiateSkills(this);
+
+  // Setup damage area
+  m_damageArea = get_node<Area3D>("Area3D");
+  DEV_ASSERT(m_damageArea);
+  m_damageArea->connect("area_entered", Callable(this, "OnBodyEntered"));
 }
 
 void Enemy::_process(double delta)
@@ -96,4 +102,9 @@ void Enemy::ExecuteAbility()
 {
   Vector<SkillNode*> skills = m_skillSet->GetActiveSkills();
   skills[0]->Execute();
+}
+
+void Enemy::OnBodyEntered(Node *body)
+{
+  UtilityFunctions::print("Enemy::OnBodyEntered called");
 }

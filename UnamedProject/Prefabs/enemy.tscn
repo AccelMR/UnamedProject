@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://cmpq7lxg4lddb"]
+
+[ext_resource type="SkillSet" uid="uid://db6jne1c4coy1" path="res://Prefabs/Skills/Sets/Player_Test.tres" id="1_leowk"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_h37mb"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8vbd8"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_leowk"]
+height = 2.0014648
+radius = 0.51416016
+
+[node name="Enemy" type="Enemy" unique_id=1641834371]
+skillSet = ExtResource("1_leowk")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1554423384]
+mesh = SubResource("CapsuleMesh_h37mb")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=2058995748]
+debug_enabled = true
+debug_path_custom_color = Color(0.92156863, 0.10980392, 0.10980392, 1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=164376134]
+shape = SubResource("CapsuleShape3D_8vbd8")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=71535211]
+collision_mask = 2147483649
+gravity_space_override = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1009465487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0007324219, 0)
+shape = SubResource("CylinderShape3D_leowk")
+debug_color = Color(0.91520905, 0.11312679, 0.65552795, 0.41960785)

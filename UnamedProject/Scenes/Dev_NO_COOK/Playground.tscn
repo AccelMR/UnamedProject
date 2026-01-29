@@ -1,14 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://2q57fcxfs7ah"]
+[gd_scene load_steps=9 format=3 uid="uid://2q57fcxfs7ah"]
 
-[ext_resource type="PackedScene" uid="uid://h5a1ro1l4dp1" path="res://Prefabs/Floor.tscn" id="1_5fb1o"]
 [ext_resource type="Environment" uid="uid://x4d4wqn4pk0d" path="res://Environments/Skybox.tres" id="2_s60jh"]
 [ext_resource type="PackedScene" uid="uid://cjqc7ke5ajhho" path="res://Prefabs/CameraController.tscn" id="3_srsxx"]
 [ext_resource type="PackedScene" uid="uid://bwnunsxgnti6q" path="res://Prefabs/Player.tscn" id="4_2n8uf"]
+[ext_resource type="PackedScene" uid="uid://cmpq7lxg4lddb" path="res://Prefabs/enemy.tscn" id="5_s60jh"]
+[ext_resource type="ArrayMesh" uid="uid://jvubmmo0a3yi" path="res://Models/Plane.obj" id="5_srsxx"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_2n8uf"]
+vertices = PackedVector3Array(-99.5, 0.5, -99.5, -99.5, 0.5, 99.5, 99.5, 0.5, 99.5, 99.5, 0.5, -99.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_s60jh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s60jh"]
+albedo_color = Color(0.35686275, 0.7058824, 0.03529412, 1)
 
 [node name="Playground" type="Node3D" unique_id=1137397554]
-
-[node name="Floor" parent="." unique_id=1521552997 instance=ExtResource("1_5fb1o")]
-transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -0.0071868896, -0.008300781, 0.00015258789)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1337803284]
 environment = ExtResource("2_s60jh")
@@ -22,4 +29,22 @@ light_indirect_energy = 1.9
 transform = Transform3D(1, 0, 0, 0, 0.7431448, 0.6691306, 0, -0.6691306, 0.7431448, -0.189, 16.44, 8.439)
 
 [node name="Player" parent="." unique_id=636184571 instance=ExtResource("4_2n8uf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.910285, 4.0699625, -3.6248703)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.013915, 0, -13.952042)
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1206555514]
+transform = Transform3D(0.9999986, 0.00088100816, 0.0013958776, -0.0008798299, 0.9999993, -0.0008361016, -0.0013966205, 0.0008348599, 0.9999987, 0, -1, 0)
+navigation_mesh = SubResource("NavigationMesh_2n8uf")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D" unique_id=247426694]
+collision_layer = 3
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/StaticBody3D" unique_id=133452376]
+shape = SubResource("WorldBoundaryShape3D_s60jh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/StaticBody3D" unique_id=1314281621]
+mesh = ExtResource("5_srsxx")
+surface_material_override/0 = SubResource("StandardMaterial3D_s60jh")
+
+[node name="Enemy" parent="." unique_id=1641834371 instance=ExtResource("5_s60jh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.055, 0.0038346052, -16.69189)

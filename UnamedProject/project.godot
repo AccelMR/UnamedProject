@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="UnamedProject"
-run/main_scene="uid://cobog1riogmso"
+run/main_scene="uid://2q57fcxfs7ah"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 

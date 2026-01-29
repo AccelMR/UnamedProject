@@ -4,6 +4,8 @@
 #include <godot_cpp/variant/vector3.hpp>
 #include <godot_cpp/classes/character_body3d.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/classes/collision_shape3d.hpp>
+#include <godot_cpp/classes/area3d.hpp>
 
 #include <memory>
 
@@ -34,6 +36,8 @@ public:
   void SetSkillSet(const Ref<SkillSet>& skillSet) { m_skillSet = skillSet; }
 
   inline Player* GetPlayer() const { return m_player; }
+
+  void OnBodyEntered(Node *body);
   
 protected:
   static void _bind_methods();
@@ -43,6 +47,8 @@ protected:
 private:
   NavigationAgent3D* m_navigationAgent;
   Player* m_player;
+  CollisionShape3D* m_collisionObject;
+  Area3D* m_damageArea = nullptr;
 
   shared_ptr<FiniteStateMachine> m_fsm;
   

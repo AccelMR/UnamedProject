@@ -25,6 +25,7 @@ void FireCone::SetupCone(const FireConeData& data)
   {
     m_damageArea = memnew(Area3D);
     call_deferred("add_child", m_damageArea);
+    m_damageArea->set_collision_mask(1 << 31);
   }
 
   if (!m_collisionShape)
