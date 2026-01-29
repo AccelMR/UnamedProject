@@ -123,6 +123,8 @@ StyleCopReport.xml
 *.ilk
 *.meta
 *.obj
+#Exeption for .obj that are inside Models folder (EF Core etc.)
+!**/Models/*.obj
 *.idb
 *.iobj
 *.pch
