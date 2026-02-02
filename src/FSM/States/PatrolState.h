@@ -2,7 +2,7 @@
 
 #include "../State.h" 
 #include "../FiniteStateMachine.h"
-#include "../../Enemy.h"
+#include "../../Agent/Specific/Enemy.h"
 
 #include<memory>
 

@@ -9,13 +9,23 @@
 
 #include <memory>
 
-#include "IAgent.h"
+#include "Agent/IAgent.h"
 #include "FSM/FiniteStateMachine.h"
 #include "Skills/System/SkillSet.h"
 #include "Player.h"
 
 using namespace godot;
 using namespace std;
+
+class EnemyData
+{
+ public:
+  EnemyData() = default;
+  ~EnemyData() = default;
+
+
+ private:
+};
 
 class Enemy : public CharacterBody3D, public IAgent
 {

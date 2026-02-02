@@ -1,10 +1,11 @@
 #include "register_types.h"
 
 #include "CameraController.h"
-#include "Enemy.h"
 #include "InputManager.h"
 #include "MouseMarker.h"
-#include "Player.h"
+
+#include "Agent/Specific/Enemy.h"
+#include "Agent/Specific/Player.h"
 
 #include "Skills/System/SkillBase.h"
 #include "Skills/System/SkillSet.h"

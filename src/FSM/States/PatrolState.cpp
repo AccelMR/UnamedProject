@@ -1,7 +1,7 @@
 #include "PatrolState.h"
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/vector3.hpp>
-#include "../../Player.h"
+#include "../../Agent/Specific/Player.h"
 
 PatrolState::PatrolState(const shared_ptr<FiniteStateMachine> &stateMachine,
                          Enemy* agent)
