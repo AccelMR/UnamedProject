@@ -17,7 +17,7 @@ class PlayerVM
  int32_t GetHealth() const { return m_health; }
  
  protected:
-  friend class PlayerData;
+  friend class Player;
 
   void NotifyHealthChanged(int32_t newHealth);
 

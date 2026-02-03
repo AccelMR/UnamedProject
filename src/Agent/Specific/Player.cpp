@@ -52,19 +52,6 @@ void Player::_bind_methods()
                "SetSkillSet", "GetSkillSet");
 }
 
-void PlayerData::CreateViewModel()
-{
-  m_viewModel = std::make_shared<PlayerVM>();
-}
-
-void PlayerData::SetHealth(int32_t newHealth)
-{
-  health = Math::clamp(newHealth, 0, maxHealth);
-  if (m_viewModel)
-  {
-    m_viewModel->NotifyHealthChanged(health);
-  }
-}
 
 void Player::_ready()
 {
@@ -122,9 +109,17 @@ void Player::_ready()
     m_playerUI->PopulateSkillList(m_skillSet.ptr());
   }
 
-  m_playerData.CreateViewModel();
+  m_viewModel = std::make_shared<PlayerVM>();
 
-  m_playerUI->BindPlayerVM(m_playerData.GetViewModel().lock());
+  m_playerData.OnHealthChanged = [this](int32_t newHealth)
+  {
+    if (m_viewModel)
+    {
+      m_viewModel->NotifyHealthChanged(newHealth);
+    }
+  };
+
+  m_playerUI->BindPlayerVM(m_viewModel);
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)

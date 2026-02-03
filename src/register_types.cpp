@@ -6,6 +6,7 @@
 
 #include "Agent/Specific/Enemy.h"
 #include "Agent/Specific/Player.h"
+#include "Agent/Stats/AgentStats.h"
 
 #include "Skills/System/SkillBase.h"
 #include "Skills/System/SkillSet.h"
@@ -30,6 +31,7 @@ void initialize_example_module(ModuleInitializationLevel p_level)
 
   GDREGISTER_CLASS(SkillResource);
   GDREGISTER_CLASS(FireConeResource);
+  GDREGISTER_CLASS(AgentBaseStatsResource);
 
   GDREGISTER_RUNTIME_CLASS(Enemy);
 
