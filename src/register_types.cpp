@@ -5,6 +5,7 @@
 #include "InputManager.h"
 #include "MouseMarker.h"
 #include "Player.h"
+#include "Spawner.h"
 
 #include "Skills/System/SkillBase.h"
 #include "Skills/System/SkillSet.h"
@@ -45,6 +46,8 @@ void initialize_example_module(ModuleInitializationLevel p_level)
   GDREGISTER_RUNTIME_CLASS(PlayerUI);
 
   GDREGISTER_CLASS(SkillSet);
+
+  GDREGISTER_RUNTIME_CLASS(Spawner);
 }
 
 void uninitialize_example_module(ModuleInitializationLevel p_level)
