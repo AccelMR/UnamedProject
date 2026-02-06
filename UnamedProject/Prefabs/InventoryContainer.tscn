@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://pv8tvmd3spys"]
+
+[ext_resource type="PackedScene" uid="uid://c5sn5rtaq2ri8" path="res://Prefabs/InventorySlot.tscn" id="1_6xqm3"]
+
+[node name="InventoryGrid" type="InventoryGridContainer" unique_id=765182057]
+item_scene = ExtResource("1_6xqm3")
+custom_minimum_size = Vector2(10, 10)
+offset_left = 12.0
+offset_top = 26.0
+offset_right = 675.0
+offset_bottom = 287.0
+scale = Vector2(0.9977283, 1)
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 7
+columns = 10

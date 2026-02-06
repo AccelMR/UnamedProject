@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5sn5rtaq2ri8"]
+
+[ext_resource type="Texture2D" uid="uid://d1m2l6i6egnsc" path="res://icon.svg" id="1_nckkc"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8odlv"]
+texture = ExtResource("1_nckkc")
+
+[node name="Panel" type="InventorySlot" unique_id=216004690]
+custom_minimum_size = Vector2(60, 60)
+theme_override_styles/panel = SubResource("StyleBoxTexture_8odlv")

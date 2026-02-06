@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://bgqf4f4n1thke"]
+
+[ext_resource type="Texture2D" uid="uid://dbdow47iuwns6" path="res://resources/Icons/Inventory/consumable.png" id="1_2m2mn"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_oelrj"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ncmnv"]
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_2m2mn"]
+
+[node name="PotionItem" type="Node3D" unique_id=1606011826]
+
+[node name="Item" type="Item" parent="." unique_id=1958318739]
+ItemRarity = 1
+ItemType = 2
+icon = ExtResource("1_2m2mn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Item" unique_id=1456330653]
+shape = SubResource("SphereShape3D_oelrj")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=447013132]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_ncmnv")
+mesh = SubResource("SphereMesh_2m2mn")
